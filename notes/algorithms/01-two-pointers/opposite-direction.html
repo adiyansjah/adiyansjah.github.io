@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Two Pointers: Opposite Direction | Algorithm Visualizer</title>
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #0f172a;
+            --muted: #64748b;
+            --border: #e2e8f0;
+            --accent-l: #2563eb;
+            --accent-l-bg: #dbeafe;
+            --accent-r: #f59e0b;
+            --accent-r-bg: #fef3c7;
+            --success: #16a34a;
+            --success-bg: #dcfce7;
+            --error: #dc2626;
+            --error-bg: #fee2e2;
+            --shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+            --radius: 12px;
+            --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--sans);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 24px 16px 48px;
+        }
+
+        /* Header */
+        header {
+            margin-bottom: 24px;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            font-size: 15px;
+        }
+
+        /* Card */
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .card-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 16px;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: flex-end;
+        }
+
+        .input-group {
+            flex: 1;
+            min-width: 140px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 6px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: var(--mono);
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--accent-l);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 10px 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--card);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        button:hover:not(:disabled) {
+            border-color: var(--accent-l);
+            background: var(--accent-l-bg);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        button.primary {
+            background: var(--accent-l);
+            border-color: var(--accent-l);
+            color: white;
+        }
+
+        button.primary:hover:not(:disabled) {
+            background: #1d4ed8;
+        }
+
+        .speed-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .speed-control label {
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .speed-control input[type="range"] {
+            flex: 1;
+            max-width: 200px;
+        }
+
+        .speed-control .speed-value {
+            font-family: var(--mono);
+            font-size: 12px;
+            color: var(--muted);
+            min-width: 70px;
+        }
+
+        /* Visualization */
+        .viz-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 32px 16px;
+        }
+
+        .array-viz {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+
+        .cell {
+            position: relative;
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--card);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-family: var(--mono);
+            font-size: 18px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .cell.active-l {
+            border-color: var(--accent-l);
+            background: var(--accent-l-bg);
+            transform: translateY(-4px);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.2);
+        }
+
+        .cell.active-r {
+            border-color: var(--accent-r);
+            background: var(--accent-r-bg);
+            transform: translateY(-4px);
+            box-shadow: 0 6px 16px rgba(245, 158, 11, 0.2);
+        }
+
+        .cell.active-l.active-r {
+            background: linear-gradient(135deg, var(--accent-l-bg) 50%, var(--accent-r-bg) 50%);
+            border-color: var(--success);
+        }
+
+        .cell.found {
+            border-color: var(--success);
+            background: var(--success-bg);
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(22, 163, 74, 0.25);
+        }
+
+        .cell.eliminated {
+            opacity: 0.35;
+            transform: scale(0.95);
+        }
+
+        .pointer {
+            position: absolute;
+            bottom: -28px;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 4px;
+            opacity: 0;
+            transform: translateY(-8px);
+            transition: all 0.3s ease;
+        }
+
+        .pointer.left {
+            background: var(--accent-l);
+            color: white;
+        }
+
+        .pointer.right {
+            background: var(--accent-r);
+            color: white;
+        }
+
+        .cell.show-l .pointer.left,
+        .cell.show-r .pointer.right {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .cell.show-l.show-r .pointer.left {
+            left: 4px;
+        }
+
+        .cell.show-l.show-r .pointer.right {
+            right: 4px;
+        }
+
+        /* Status */
+        .status-bar {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            text-align: center;
+            background: #f1f5f9;
+            color: var(--muted);
+            transition: all 0.3s;
+        }
+
+        .status-bar.success {
+            background: var(--success-bg);
+            color: var(--success);
+        }
+
+        .status-bar.error {
+            background: var(--error-bg);
+            color: var(--error);
+        }
+
+        .status-bar.info {
+            background: var(--accent-l-bg);
+            color: var(--accent-l);
+        }
+
+        /* Educational Panels */
+        .panels {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 640px) {
+            .panels {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        .panel-header {
+            padding: 12px 16px;
+            background: #f8fafc;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--muted);
+        }
+
+        .panel-body {
+            padding: 16px;
+        }
+
+        /* Pseudocode */
+        .pseudocode {
+            font-family: var(--mono);
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        .code-line {
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: all 0.2s;
+            white-space: pre;
+        }
+
+        .code-line.highlight {
+            background: var(--accent-l-bg);
+            border-left: 3px solid var(--accent-l);
+        }
+
+        .code-line .keyword {
+            color: #8b5cf6;
+        }
+
+        .code-line .comment {
+            color: var(--muted);
+        }
+
+        /* Explanation */
+        .explanation {
+            min-height: 120px;
+        }
+
+        .explanation .step-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+
+        .explanation .step-detail {
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .explanation .calculation {
+            margin-top: 12px;
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: 8px;
+            font-family: var(--mono);
+            font-size: 14px;
+        }
+
+        .explanation .calculation .highlight-l {
+            color: var(--accent-l);
+            font-weight: 600;
+        }
+
+        .explanation .calculation .highlight-r {
+            color: var(--accent-r);
+            font-weight: 600;
+        }
+
+        .explanation .reason {
+            margin-top: 12px;
+            padding: 10px 12px;
+            background: var(--accent-l-bg);
+            border-radius: 8px;
+            font-size: 13px;
+            color: var(--accent-l);
+        }
+
+        .explanation .reason.move-r {
+            background: var(--accent-r-bg);
+            color: #b45309;
+        }
+
+        .explanation .reason.found {
+            background: var(--success-bg);
+            color: var(--success);
+        }
+
+        /* Iteration counter */
+        .iteration-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: #f1f5f9;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--muted);
+            margin-bottom: 16px;
+        }
+
+        .iteration-badge .count {
+            font-family: var(--mono);
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 32px;
+            color: var(--muted);
+        }
+
+        .empty-state svg {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 12px;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Two Pointers: Opposite Direction</h1>
+            <p class="subtitle">Find two numbers in a sorted array that sum to a target value</p>
+        </header>
+
+        <!-- Controls -->
+        <div class="card">
+            <div class="card-title">Configuration</div>
+            <div class="controls">
+                <div class="input-group">
+                    <label for="arrayInput">Sorted Array (comma-separated)</label>
+                    <input type="text" id="arrayInput" value="1, 2, 4, 7, 11, 15" placeholder="1, 2, 3, 4, 5">
+                </div>
+                <div class="input-group" style="max-width: 100px;">
+                    <label for="targetInput">Target</label>
+                    <input type="number" id="targetInput" value="15">
+                </div>
+                <div class="btn-group">
+                    <button id="btnLoad" class="primary">Load</button>
+                    <button id="btnRandom">Random</button>
+                </div>
+            </div>
+            <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 16px;">
+                <div class="btn-group">
+                    <button id="btnStep" disabled>Step</button>
+                    <button id="btnPlay" disabled>Play</button>
+                    <button id="btnReset" disabled>Reset</button>
+                </div>
+                <div class="speed-control">
+                    <label>Speed:</label>
+                    <input type="range" id="speedSlider" min="100" max="1500" value="600" step="100">
+                    <span class="speed-value" id="speedValue">600ms</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Visualization -->
+        <div class="card">
+            <div class="viz-container">
+                <div class="iteration-badge">
+                    Iteration: <span class="count" id="iterCount">0</span>
+                </div>
+                <div class="array-viz" id="arrayViz">
+                    <div class="empty-state">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16M4 12h16M4 17h7" />
+                        </svg>
+                        <p>Enter an array and click Load to begin</p>
+                    </div>
+                </div>
+                <div class="status-bar" id="statusBar">
+                    Ready to start. Enter a sorted array and target sum.
+                </div>
+            </div>
+        </div>
+
+        <!-- Educational Panels -->
+        <div class="panels">
+            <!-- Pseudocode -->
+            <div class="panel">
+                <div class="panel-header">Algorithm</div>
+                <div class="panel-body">
+                    <div class="pseudocode" id="pseudocode">
+                        <div class="code-line" data-line="0"><span class="keyword">def</span> two_sum(arr, target):</div>
+                        <div class="code-line" data-line="1">  L, R = 0, len(arr) - 1</div>
+                        <div class="code-line" data-line="2">  <span class="keyword">while</span> L < R:</div>
+                        <div class="code-line" data-line="3">    sum = arr[L] + arr[R]</div>
+                        <div class="code-line" data-line="4">    <span class="keyword">if</span> sum == target:</div>
+                        <div class="code-line" data-line="5">      <span class="keyword">return</span> [L, R]  <span class="comment"># Found!</span></div>
+                        <div class="code-line" data-line="6">    <span class="keyword">elif</span> sum < target:</div>
+                        <div class="code-line" data-line="7">      L += 1  <span class="comment"># Need larger</span></div>
+                        <div class="code-line" data-line="8">    <span class="keyword">else</span>:</div>
+                        <div class="code-line" data-line="9">      R -= 1  <span class="comment"># Need smaller</span></div>
+                        <div class="code-line" data-line="10">  <span class="keyword">return</span> None  <span class="comment"># Not found</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Explanation -->
+            <div class="panel">
+                <div class="panel-header">What's Happening</div>
+                <div class="panel-body">
+                    <div class="explanation" id="explanation">
+                        <div class="step-title">Ready to Start</div>
+                        <div class="step-detail">
+                            This algorithm finds two numbers that add up to a target sum.
+                            It uses two pointers starting at opposite ends of a sorted array.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== State =====
+        const state = {
+            arr: [],
+            target: 0,
+            left: null,
+            right: null,
+            iteration: 0,
+            found: false,
+            done: false,
+            foundPair: null,
+            playing: false,
+            timer: null,
+            currentLine: -1
+        };
+
+        // ===== DOM Elements =====
+        const $ = id => document.getElementById(id);
+        const arrayInput = $('arrayInput');
+        const targetInput = $('targetInput');
+        const arrayViz = $('arrayViz');
+        const iterCount = $('iterCount');
+        const statusBar = $('statusBar');
+        const pseudocode = $('pseudocode');
+        const explanation = $('explanation');
+        const btnLoad = $('btnLoad');
+        const btnRandom = $('btnRandom');
+        const btnStep = $('btnStep');
+        const btnPlay = $('btnPlay');
+        const btnReset = $('btnReset');
+        const speedSlider = $('speedSlider');
+        const speedValue = $('speedValue');
+
+        // ===== Utilities =====
+        function parseArray(text) {
+            const parts = text.split(',').map(s => s.trim()).filter(Boolean);
+            if (parts.length === 0) return [];
+            const nums = parts.map(p => Number(p));
+            if (nums.some(n => isNaN(n))) {
+                throw new Error('Array contains non-numeric values');
+            }
+            return nums;
+        }
+
+        function generateRandomArray() {
+            const length = Math.floor(Math.random() * 6) + 5; // 5-10 elements
+            const arr = [];
+            for (let i = 0; i < length; i++) {
+                arr.push(Math.floor(Math.random() * 30) + 1);
+            }
+            return [...new Set(arr)].sort((a, b) => a - b);
+        }
+
+        function generateTarget(arr) {
+            if (arr.length < 2) return 0;
+            // 70% chance to pick a valid pair
+            if (Math.random() < 0.7) {
+                const i = Math.floor(Math.random() * (arr.length - 1));
+                const j = Math.floor(Math.random() * (arr.length - i - 1)) + i + 1;
+                return arr[i] + arr[j];
+            }
+            return Math.floor(Math.random() * 50) + 1;
+        }
+
+        // ===== Rendering =====
+        function renderArray() {
+            const { arr, left, right, foundPair, done } = state;
+
+            if (arr.length === 0) {
+                arrayViz.innerHTML = `
+                    <div class="empty-state">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16M4 12h16M4 17h7" />
+                        </svg>
+                        <p>Enter an array and click Load to begin</p>
+                    </div>
+                `;
+                return;
+            }
+
+            arrayViz.innerHTML = arr.map((value, index) => {
+                const classes = ['cell'];
+
+                if (foundPair && (index === foundPair.left || index === foundPair.right)) {
+                    classes.push('found');
+                } else {
+                    if (left !== null && index === left) {
+                        classes.push('active-l', 'show-l');
+                    }
+                    if (right !== null && index === right) {
+                        classes.push('active-r', 'show-r');
+                    }
+                    // Mark eliminated cells
+                    if (done && !foundPair) {
+                        classes.push('eliminated');
+                    } else if (left !== null && right !== null) {
+                        if (index < left || index > right) {
+                            classes.push('eliminated');
+                        }
+                    }
+                }
+
+                return `
+                    <div class="${classes.join(' ')}">
+                        ${value}
+                        <span class="pointer left">L</span>
+                        <span class="pointer right">R</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderPseudocode(line) {
+            const lines = pseudocode.querySelectorAll('.code-line');
+            lines.forEach(el => {
+                el.classList.remove('highlight');
+                if (parseInt(el.dataset.line) === line) {
+                    el.classList.add('highlight');
+                }
+            });
+        }
+
+        function renderExplanation(type, data = {}) {
+            const templates = {
+                init: () => `
+                    <div class="step-title">Initialized</div>
+                    <div class="step-detail">
+                        Pointers set to opposite ends of the sorted array.
+                        <br><br>
+                        <strong>L</strong> points to the smallest value (index 0).
+                        <br>
+                        <strong>R</strong> points to the largest value (index ${state.arr.length - 1}).
+                    </div>
+                    <div class="calculation">
+                        Target sum: <strong>${state.target}</strong>
+                    </div>
+                `,
+                check: () => {
+                    const sum = state.arr[state.left] + state.arr[state.right];
+                    const comparison = sum === state.target ? '=' : (sum < state.target ? '<' : '>');
+                    return `
+                        <div class="step-title">Checking Sum</div>
+                        <div class="step-detail">
+                            Comparing current sum with target.
+                        </div>
+                        <div class="calculation">
+                            arr[<span class="highlight-l">L=${state.left}</span>] + arr[<span class="highlight-r">R=${state.right}</span>]
+                            <br>
+                            = <span class="highlight-l">${state.arr[state.left]}</span> + <span class="highlight-r">${state.arr[state.right]}</span>
+                            <br>
+                            = <strong>${sum}</strong> ${comparison} ${state.target}
+                        </div>
+                    `;
+                },
+                moveLeft: (oldLeft) => {
+                    const oldSum = state.arr[oldLeft] + state.arr[state.right];
+                    return `
+                        <div class="step-title">Move L Right</div>
+                        <div class="step-detail">
+                            Sum <strong>${oldSum}</strong> is less than target <strong>${state.target}</strong>.
+                        </div>
+                        <div class="reason">
+                            Since the array is sorted, moving L right increases the sum.
+                            We need a larger sum, so L moves from ${oldLeft} to ${state.left}.
+                        </div>
+                    `;
+                },
+                moveRight: (oldRight) => {
+                    const oldSum = state.arr[state.left] + state.arr[oldRight];
+                    return `
+                        <div class="step-title">Move R Left</div>
+                        <div class="step-detail">
+                            Sum <strong>${oldSum}</strong> is greater than target <strong>${state.target}</strong>.
+                        </div>
+                        <div class="reason move-r">
+                            Since the array is sorted, moving R left decreases the sum.
+                            We need a smaller sum, so R moves from ${oldRight} to ${state.right}.
+                        </div>
+                    `;
+                },
+                found: () => `
+                    <div class="step-title">Pair Found!</div>
+                    <div class="step-detail">
+                        Found two numbers that sum to <strong>${state.target}</strong>.
+                    </div>
+                    <div class="calculation">
+                        arr[<span class="highlight-l">${state.foundPair.left}</span>] + arr[<span class="highlight-r">${state.foundPair.right}</span>]
+                        <br>
+                        = <span class="highlight-l">${state.arr[state.foundPair.left]}</span> + <span class="highlight-r">${state.arr[state.foundPair.right]}</span>
+                        <br>
+                        = <strong>${state.target}</strong>
+                    </div>
+                    <div class="reason found">
+                        The algorithm terminates with the solution in O(n) time!
+                    </div>
+                `,
+                notFound: () => `
+                    <div class="step-title">No Pair Found</div>
+                    <div class="step-detail">
+                        Pointers have crossed (L ≥ R). The search space is exhausted.
+                    </div>
+                    <div class="reason move-r">
+                        No two numbers in this array sum to ${state.target}.
+                        The algorithm explored all possibilities in O(n) time.
+                    </div>
+                `,
+                ready: () => `
+                    <div class="step-title">Ready to Start</div>
+                    <div class="step-detail">
+                        This algorithm finds two numbers that add up to a target sum.
+                        It uses two pointers starting at opposite ends of a sorted array.
+                    </div>
+                `
+            };
+
+            explanation.innerHTML = templates[type] ? templates[type](data) : templates.ready();
+        }
+
+        function setStatus(message, type = '') {
+            statusBar.textContent = message;
+            statusBar.className = 'status-bar' + (type ? ` ${type}` : '');
+        }
+
+        function updateButtons() {
+            const canRun = state.arr.length >= 2 && !state.done;
+            btnStep.disabled = !canRun || state.playing;
+            btnPlay.disabled = !canRun;
+            btnReset.disabled = state.arr.length === 0;
+            btnPlay.textContent = state.playing ? 'Pause' : 'Play';
+        }
+
+        function renderAll() {
+            renderArray();
+            iterCount.textContent = state.iteration;
+            updateButtons();
+        }
+
+        // ===== Algorithm =====
+        function initRun() {
+            stopPlaying();
+
+            try {
+                let arr = parseArray(arrayInput.value);
+                const target = Number(targetInput.value);
+
+                if (isNaN(target)) {
+                    throw new Error('Target must be a number');
+                }
+
+                // Sort the array
+                arr = [...arr].sort((a, b) => a - b);
+
+                // Reset state
+                Object.assign(state, {
+                    arr,
+                    target,
+                    left: arr.length >= 2 ? 0 : null,
+                    right: arr.length >= 2 ? arr.length - 1 : null,
+                    iteration: 0,
+                    found: false,
+                    done: arr.length < 2,
+                    foundPair: null,
+                    playing: false,
+                    timer: null,
+                    currentLine: 1
+                });
+
+                if (arr.length < 2) {
+                    setStatus('Array needs at least 2 elements', 'error');
+                    renderExplanation('ready');
+                    renderPseudocode(-1);
+                } else {
+                    setStatus(`Loaded ${arr.length} elements. Target: ${target}. Click Step or Play.`, 'info');
+                    renderExplanation('init');
+                    renderPseudocode(1);
+                }
+
+                renderAll();
+            } catch (e) {
+                setStatus(e.message, 'error');
+                state.arr = [];
+                state.done = true;
+                renderAll();
+            }
+        }
+
+        function step() {
+            if (state.done || state.arr.length < 2) return;
+
+            const { arr, target } = state;
+            let { left, right } = state;
+
+            // Check termination
+            if (left >= right) {
+                state.done = true;
+                state.found = false;
+                setStatus('Pointers crossed. No pair found.', 'error');
+                renderExplanation('notFound');
+                renderPseudocode(10);
+                renderAll();
+                stopPlaying();
+                return;
+            }
+
+            const leftVal = arr[left];
+            const rightVal = arr[right];
+            const sum = leftVal + rightVal;
+
+            state.iteration++;
+
+            // Check sum
+            renderPseudocode(3);
+            renderExplanation('check');
+
+            if (sum === target) {
+                // Found!
+                state.found = true;
+                state.done = true;
+                state.foundPair = { left, right };
+                setStatus(`Found! ${leftVal} + ${rightVal} = ${target}`, 'success');
+                renderPseudocode(5);
+                setTimeout(() => renderExplanation('found'), 100);
+                renderAll();
+                stopPlaying();
+                return;
+            }
+
+            if (sum < target) {
+                // Move left pointer right
+                const oldLeft = left;
+                state.left = left + 1;
+                setStatus(`Sum ${sum} < ${target}. Moving L right.`, 'info');
+                renderPseudocode(7);
+                setTimeout(() => renderExplanation('moveLeft', oldLeft), 100);
+            } else {
+                // Move right pointer left
+                const oldRight = right;
+                state.right = right - 1;
+                setStatus(`Sum ${sum} > ${target}. Moving R left.`, 'info');
+                renderPseudocode(9);
+                setTimeout(() => renderExplanation('moveRight', oldRight), 100);
+            }
+
+            // Check if pointers crossed after move
+            if (state.left >= state.right) {
+                renderAll();
+                setTimeout(() => {
+                    state.done = true;
+                    state.found = false;
+                    setStatus('Search exhausted. No pair found.', 'error');
+                    renderExplanation('notFound');
+                    renderPseudocode(10);
+                    renderAll();
+                    stopPlaying();
+                }, 300);
+                return;
+            }
+
+            renderAll();
+        }
+
+        function play() {
+            if (state.arr.length < 2 || state.done) return;
+
+            if (state.playing) {
+                stopPlaying();
+                setStatus('Paused. Click Step or Play to continue.', 'info');
+                return;
+            }
+
+            state.playing = true;
+            updateButtons();
+            setStatus('Playing...', 'info');
+
+            const tick = () => {
+                if (!state.playing || state.done) {
+                    stopPlaying();
+                    return;
+                }
+                step();
+                const delay = Number(speedSlider.value);
+                state.timer = setTimeout(tick, delay);
+            };
+
+            state.timer = setTimeout(tick, Number(speedSlider.value));
+        }
+
+        function stopPlaying() {
+            state.playing = false;
+            if (state.timer) {
+                clearTimeout(state.timer);
+                state.timer = null;
+            }
+            updateButtons();
+        }
+
+        function reset() {
+            stopPlaying();
+            initRun();
+        }
+
+        function loadRandom() {
+            const arr = generateRandomArray();
+            const target = generateTarget(arr);
+            arrayInput.value = arr.join(', ');
+            targetInput.value = target;
+            initRun();
+        }
+
+        // ===== Event Listeners =====
+        btnLoad.addEventListener('click', initRun);
+        btnRandom.addEventListener('click', loadRandom);
+        btnStep.addEventListener('click', step);
+        btnPlay.addEventListener('click', play);
+        btnReset.addEventListener('click', reset);
+
+        speedSlider.addEventListener('input', () => {
+            speedValue.textContent = `${speedSlider.value}ms`;
+        });
+
+        // Allow Enter key to load
+        arrayInput.addEventListener('keypress', e => {
+            if (e.key === 'Enter') initRun();
+        });
+        targetInput.addEventListener('keypress', e => {
+            if (e.key === 'Enter') initRun();
+        });
+
+        // Initialize on load
+        speedValue.textContent = `${speedSlider.value}ms`;
+        initRun();
+    </script>
+</body>
+</html>
