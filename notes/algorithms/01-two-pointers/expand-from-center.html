@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Two Pointers: Expand from Center | Algorithm Visualizer</title>
+    <style>
+        :root {
+            --bg: transparent;
+            --card: #ffffff;
+            --text: #1a1a1a;
+            --muted: #737373;
+            --border: #e5e5e5;
+            --accent-center: #8b5cf6;
+            --accent-center-bg: #f5f3ff;
+            --accent-l: #3b82f6;
+            --accent-l-bg: #eff6ff;
+            --accent-r: #f59e0b;
+            --accent-r-bg: #fef3c7;
+            --match: #22c55e;
+            --match-bg: #f0fdf4;
+            --mismatch: #ef4444;
+            --mismatch-bg: #fef2f2;
+            --longest: #06b6d4;
+            --longest-bg: #cffafe;
+            --success: #22c55e;
+            --success-bg: #f0fdf4;
+            --error: #ef4444;
+            --error-bg: #fef2f2;
+            --radius: 8px;
+            --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--sans);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 32px 20px 48px;
+        }
+
+        /* Header */
+        header {
+            margin-bottom: 32px;
+        }
+
+        h1 {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            letter-spacing: -0.01em;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        /* Card */
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 16px;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: flex-end;
+        }
+
+        .input-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 6px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 14px;
+            font-family: var(--mono);
+            transition: border-color 0.15s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--accent-center);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 10px 18px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: var(--card);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.15s, border-color 0.15s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        button:hover:not(:disabled) {
+            background: var(--bg);
+            border-color: var(--muted);
+        }
+
+        button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        button.primary {
+            background: var(--accent-center);
+            border-color: var(--accent-center);
+            color: white;
+        }
+
+        button.primary:hover:not(:disabled) {
+            background: #7c3aed;
+        }
+
+        .speed-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .speed-control label {
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .speed-control input[type="range"] {
+            flex: 1;
+            max-width: 200px;
+        }
+
+        .speed-control .speed-value {
+            font-family: var(--mono);
+            font-size: 12px;
+            color: var(--muted);
+            min-width: 70px;
+        }
+
+        /* Visualization */
+        .viz-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .mode-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            border-radius: var(--radius);
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 12px;
+        }
+
+        .mode-badge.odd {
+            background: var(--accent-center-bg);
+            color: var(--accent-center);
+            border: 1px solid var(--accent-center);
+        }
+
+        .mode-badge.even {
+            background: var(--accent-r-bg);
+            color: #b45309;
+            border: 1px solid var(--accent-r);
+        }
+
+        .tracking-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .badge {
+            padding: 6px 12px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .badge strong {
+            color: var(--text);
+            font-family: var(--mono);
+        }
+
+        .string-viz {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 28px;
+        }
+
+        .cell {
+            position: relative;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--card);
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            font-family: var(--mono);
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .cell.center {
+            border-color: var(--accent-center);
+            background: var(--accent-center-bg);
+        }
+
+        .cell.active-l {
+            border-color: var(--accent-l);
+            background: var(--accent-l-bg);
+        }
+
+        .cell.active-r {
+            border-color: var(--accent-r);
+            background: var(--accent-r-bg);
+        }
+
+        .cell.active-l.active-r {
+            background: linear-gradient(135deg, var(--accent-l-bg) 50%, var(--accent-r-bg) 50%);
+        }
+
+        .cell.matching {
+            background: var(--match-bg);
+        }
+
+        .cell.mismatch {
+            background: var(--mismatch-bg);
+            animation: flash 0.3s;
+        }
+
+        .cell.longest {
+            border-color: var(--longest);
+            background: var(--longest-bg);
+        }
+
+        .cell.inactive {
+            opacity: 0.3;
+        }
+
+        @keyframes flash {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .pointer {
+            position: absolute;
+            bottom: -26px;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 4px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .pointer.center {
+            background: var(--accent-center);
+            color: white;
+        }
+
+        .pointer.left {
+            background: var(--accent-l);
+            color: white;
+        }
+
+        .pointer.right {
+            background: var(--accent-r);
+            color: white;
+        }
+
+        .cell.show-center .pointer.center,
+        .cell.show-l .pointer.left,
+        .cell.show-r .pointer.right {
+            opacity: 1;
+        }
+
+        .cell.show-l.show-r .pointer.left {
+            left: 2px;
+        }
+
+        .cell.show-l.show-r .pointer.right {
+            right: 2px;
+        }
+
+        /* Status */
+        .status-bar {
+            width: 100%;
+            margin-top: 10px;
+            padding: 14px 16px;
+            border-radius: var(--radius);
+            font-size: 14px;
+            text-align: center;
+            background: var(--bg);
+            color: var(--muted);
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .status-bar.success {
+            background: var(--success-bg);
+            color: var(--success);
+        }
+
+        .status-bar.error {
+            background: var(--error-bg);
+            color: var(--error);
+        }
+
+        .status-bar.info {
+            background: var(--accent-center-bg);
+            color: var(--accent-center);
+        }
+
+        /* Educational Panels */
+        .panels {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 640px) {
+            .panels {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        .panel-header {
+            padding: 14px 20px;
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .panel-body {
+            padding: 20px;
+        }
+
+        /* Pseudocode */
+        .pseudocode {
+            font-family: var(--mono);
+            font-size: 13px;
+            line-height: 1.9;
+        }
+
+        .code-line {
+            padding: 4px 10px;
+            border-radius: 4px;
+            transition: background-color 0.15s;
+            white-space: pre;
+            border-left: 2px solid transparent;
+        }
+
+        .code-line.highlight {
+            background: var(--accent-center-bg);
+            border-left-color: var(--accent-center);
+        }
+
+        .code-line .keyword {
+            color: #7c3aed;
+        }
+
+        .code-line .comment {
+            color: var(--muted);
+        }
+
+        /* Explanation */
+        .explanation {
+            min-height: 120px;
+        }
+
+        .explanation .step-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--text);
+            font-size: 15px;
+        }
+
+        .explanation .step-detail {
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .explanation .calculation {
+            margin-top: 16px;
+            padding: 14px;
+            background: var(--bg);
+            border-radius: var(--radius);
+            font-family: var(--mono);
+            font-size: 14px;
+        }
+
+        .explanation .calculation .highlight-l {
+            color: var(--accent-l);
+            font-weight: 600;
+        }
+
+        .explanation .calculation .highlight-r {
+            color: var(--accent-r);
+            font-weight: 600;
+        }
+
+        .explanation .calculation .highlight-center {
+            color: var(--accent-center);
+            font-weight: 600;
+        }
+
+        .explanation .reason {
+            margin-top: 14px;
+            padding: 12px 14px;
+            background: var(--accent-center-bg);
+            border-radius: var(--radius);
+            font-size: 13px;
+            color: var(--accent-center);
+        }
+
+        .explanation .reason.found {
+            background: var(--success-bg);
+            color: var(--success);
+        }
+
+        .explanation .reason.mismatch {
+            background: var(--mismatch-bg);
+            color: var(--mismatch);
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 32px;
+            color: var(--muted);
+        }
+
+        .empty-state svg {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 12px;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Two Pointers: Expand from Center</h1>
+            <p class="subtitle">Find the longest palindromic substring by expanding from each center</p>
+        </header>
+
+        <!-- Controls -->
+        <div class="card">
+            <div class="card-title">Configuration</div>
+            <div class="controls">
+                <div class="input-group">
+                    <label for="stringInput">String to Search</label>
+                    <input type="text" id="stringInput" value="babad" placeholder="Enter a string">
+                </div>
+                <div class="btn-group">
+                    <button id="btnLoad" class="primary">Load</button>
+                    <button id="btnRandom">Random</button>
+                </div>
+            </div>
+            <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 16px;">
+                <div class="btn-group">
+                    <button id="btnStep" disabled>Step</button>
+                    <button id="btnPlay" disabled>Play</button>
+                    <button id="btnReset" disabled>Reset</button>
+                </div>
+                <div class="speed-control">
+                    <label>Speed:</label>
+                    <input type="range" id="speedSlider" min="100" max="1500" value="600" step="100">
+                    <span class="speed-value" id="speedValue">600ms</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Visualization -->
+        <div class="card">
+            <div class="viz-container">
+                <div id="modeBadge" class="mode-badge odd" style="display: none;">
+                    Odd-length (single center)
+                </div>
+                <div class="tracking-info" id="trackingInfo" style="display: none;">
+                    <span class="badge">Center: <strong id="centerProgress">0/0</strong></span>
+                    <span class="badge">Mode: <strong id="modeText">Odd</strong></span>
+                    <span class="badge">Longest: <strong id="longestText">-</strong></span>
+                </div>
+                <div class="string-viz" id="stringViz">
+                    <div class="empty-state">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16M4 12h16M4 17h7" />
+                        </svg>
+                        <p>Enter a string and click Load to begin</p>
+                    </div>
+                </div>
+                <div class="status-bar" id="statusBar">
+                    Ready to start. Enter a string to search for palindromes.
+                </div>
+            </div>
+        </div>
+
+        <!-- Educational Panels -->
+        <div class="panels">
+            <!-- Pseudocode -->
+            <div class="panel">
+                <div class="panel-header">Algorithm</div>
+                <div class="panel-body">
+                    <div class="pseudocode" id="pseudocode">
+                        <div class="code-line" data-line="0"><span class="keyword">def</span> longest_palindrome(s):</div>
+                        <div class="code-line" data-line="1">  <span class="keyword">if not</span> s:</div>
+                        <div class="code-line" data-line="2">    <span class="keyword">return</span> ""</div>
+                        <div class="code-line" data-line="3">  </div>
+                        <div class="code-line" data-line="4">  start, end = 0, 0</div>
+                        <div class="code-line" data-line="5">  </div>
+                        <div class="code-line" data-line="6">  <span class="keyword">for</span> i <span class="keyword">in range</span>(len(s)):</div>
+                        <div class="code-line" data-line="7">    <span class="comment"># Odd-length palindrome</span></div>
+                        <div class="code-line" data-line="8">    l1, r1 = expand(s, i, i)</div>
+                        <div class="code-line" data-line="9">    <span class="keyword">if</span> r1 - l1 > end - start:</div>
+                        <div class="code-line" data-line="10">      start, end = l1, r1</div>
+                        <div class="code-line" data-line="11">    </div>
+                        <div class="code-line" data-line="12">    <span class="comment"># Even-length palindrome</span></div>
+                        <div class="code-line" data-line="13">    l2, r2 = expand(s, i, i+1)</div>
+                        <div class="code-line" data-line="14">    <span class="keyword">if</span> r2 - l2 > end - start:</div>
+                        <div class="code-line" data-line="15">      start, end = l2, r2</div>
+                        <div class="code-line" data-line="16">  </div>
+                        <div class="code-line" data-line="17">  <span class="keyword">return</span> s[start:end+1]</div>
+                        <div class="code-line" data-line="18">  </div>
+                        <div class="code-line" data-line="19"><span class="keyword">def</span> expand(s, left, right):</div>
+                        <div class="code-line" data-line="20">  <span class="keyword">while</span> left >= 0 <span class="keyword">and</span> right < len(s):</div>
+                        <div class="code-line" data-line="21">    <span class="keyword">if</span> s[left] == s[right]:</div>
+                        <div class="code-line" data-line="22">      left -= 1</div>
+                        <div class="code-line" data-line="23">      right += 1</div>
+                        <div class="code-line" data-line="24">    <span class="keyword">else</span>:</div>
+                        <div class="code-line" data-line="25">      <span class="keyword">break</span></div>
+                        <div class="code-line" data-line="26">  <span class="keyword">return</span> left + 1, right - 1</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Explanation -->
+            <div class="panel">
+                <div class="panel-header">What's Happening</div>
+                <div class="panel-body">
+                    <div class="explanation" id="explanation">
+                        <div class="step-title">Ready to Start</div>
+                        <div class="step-detail">
+                            This algorithm finds the longest palindromic substring by testing each position
+                            as a potential center. For each center, we try both odd-length (single center)
+                            and even-length (double center) palindromes.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== State =====
+        const state = {
+            str: "",
+            centerIndex: 0,
+            mode: 'odd',
+            left: null,
+            right: null,
+            longestStart: 0,
+            longestEnd: 0,
+            longestLength: 1,
+            currentStart: null,
+            currentEnd: null,
+            currentLength: 0,
+            phase: 'init',
+            subStep: 'compare',
+            iteration: 0,
+            done: false,
+            playing: false,
+            timer: null,
+            runId: 0,
+            pendingTimers: []
+        };
+
+        // ===== DOM Elements =====
+        const $ = id => document.getElementById(id);
+        const stringInput = $('stringInput');
+        const stringViz = $('stringViz');
+        const modeBadge = $('modeBadge');
+        const trackingInfo = $('trackingInfo');
+        const centerProgress = $('centerProgress');
+        const modeText = $('modeText');
+        const longestText = $('longestText');
+        const statusBar = $('statusBar');
+        const pseudocode = $('pseudocode');
+        const explanation = $('explanation');
+        const btnLoad = $('btnLoad');
+        const btnRandom = $('btnRandom');
+        const btnStep = $('btnStep');
+        const btnPlay = $('btnPlay');
+        const btnReset = $('btnReset');
+        const speedSlider = $('speedSlider');
+        const speedValue = $('speedValue');
+
+        // ===== Utilities =====
+        function clearPendingTimers() {
+            state.pendingTimers.forEach(id => clearTimeout(id));
+            state.pendingTimers = [];
+        }
+
+        function generateRandomString() {
+            const length = Math.floor(Math.random() * 5) + 6;
+            const chars = 'abcdefgh';
+
+            if (Math.random() < 0.4) {
+                const palindromes = ['aba', 'abba', 'noon', 'deed', 'level'];
+                const pal = palindromes[Math.floor(Math.random() * palindromes.length)];
+                const padding = Math.max(0, length - pal.length);
+                const leftPad = Math.floor(padding / 2);
+                const rightPad = padding - leftPad;
+
+                let result = '';
+                for (let i = 0; i < leftPad; i++) {
+                    result += chars[Math.floor(Math.random() * chars.length)];
+                }
+                result += pal;
+                for (let i = 0; i < rightPad; i++) {
+                    result += chars[Math.floor(Math.random() * chars.length)];
+                }
+                return result.substring(0, length);
+            }
+
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                result += chars[Math.floor(Math.random() * chars.length)];
+            }
+            return result;
+        }
+
+        // ===== Rendering =====
+        function renderString() {
+            const { str, left, right, centerIndex, mode, phase, longestStart, longestEnd } = state;
+
+            if (str.length === 0) {
+                stringViz.innerHTML = `
+                    <div class="empty-state">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16M4 12h16M4 17h7" />
+                        </svg>
+                        <p>Enter a string and click Load to begin</p>
+                    </div>
+                `;
+                return;
+            }
+
+            stringViz.innerHTML = str.split('').map((char, index) => {
+                const classes = ['cell'];
+
+                // Center highlight
+                if (phase === 'select_center' || phase === 'expand') {
+                    if (mode === 'odd' && index === centerIndex) {
+                        classes.push('center', 'show-center');
+                    } else if (mode === 'even' && (index === centerIndex || index === centerIndex + 1)) {
+                        classes.push('center', 'show-center');
+                    }
+                }
+
+                // Pointer highlights
+                if (left !== null && index === left) {
+                    classes.push('active-l', 'show-l');
+                }
+                if (right !== null && index === right) {
+                    classes.push('active-r', 'show-r');
+                }
+
+                // Matching region
+                if (phase === 'expand' && left !== null && right !== null && index > left && index < right) {
+                    classes.push('matching');
+                }
+
+                // Longest palindrome highlight
+                if (phase === 'complete' && index >= longestStart && index <= longestEnd) {
+                    classes.push('longest');
+                }
+
+                // Inactive regions
+                if (phase === 'expand' && left !== null && right !== null && (index < left || index > right)) {
+                    classes.push('inactive');
+                }
+
+                return `
+                    <div class="${classes.join(' ')}">
+                        ${char}
+                        <span class="pointer center">C</span>
+                        <span class="pointer left">L</span>
+                        <span class="pointer right">R</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderPseudocode(line) {
+            const lines = pseudocode.querySelectorAll('.code-line');
+            lines.forEach(el => {
+                el.classList.remove('highlight');
+                if (parseInt(el.dataset.line) === line) {
+                    el.classList.add('highlight');
+                }
+            });
+        }
+
+        function renderExplanation(type, data = {}) {
+            const templates = {
+                init: () => `
+                    <div class="step-title">Ready to Start</div>
+                    <div class="step-detail">
+                        We'll try each position as a potential palindrome center.
+                        For each center, we test both odd-length (single center) and
+                        even-length (double center) palindromes.
+                    </div>
+                    <div class="calculation">
+                        String: "${state.str}"<br>
+                        Length: ${state.str.length}<br>
+                        Total tests: ${state.str.length * 2}
+                    </div>
+                `,
+
+                selectCenter: () => {
+                    const modeText = state.mode === 'odd'
+                        ? 'Odd-length (single center)'
+                        : 'Even-length (double center)';
+                    const initText = state.mode === 'odd'
+                        ? `L = R = ${state.centerIndex}`
+                        : `L = ${state.centerIndex}, R = ${state.centerIndex + 1}`;
+                    const chars = state.mode === 'odd'
+                        ? `'${state.str[state.left]}'`
+                        : `'${state.str[state.left]}' and '${state.str[state.right]}'`;
+
+                    return `
+                        <div class="step-title">Select Center</div>
+                        <div class="step-detail">
+                            Testing position ${state.centerIndex} as center.<br>
+                            <strong>${modeText}</strong>
+                        </div>
+                        <div class="calculation">
+                            ${initText}<br>
+                            Starting character(s): ${chars}
+                        </div>
+                    `;
+                },
+
+                expandMatch: () => `
+                    <div class="step-title">Characters Match!</div>
+                    <div class="step-detail">
+                        s[<span class="highlight-l">L=${state.left}</span>] ==
+                        s[<span class="highlight-r">R=${state.right}</span>]
+                    </div>
+                    <div class="calculation">
+                        '<span class="highlight-l">${state.str[state.left]}</span>' ==
+                        '<span class="highlight-r">${state.str[state.right]}</span>' ✓
+                    </div>
+                    <div class="reason found">
+                        Valid palindrome continues! Moving L left and R right.
+                    </div>
+                `,
+
+                expandStop: (data) => {
+                    const reason = data.reason === 'mismatch'
+                        ? `Characters don't match: '${state.str[state.left]}' ≠ '${state.str[state.right]}'`
+                        : 'Reached string boundary';
+
+                    return `
+                        <div class="step-title">Stop Expanding</div>
+                        <div class="step-detail">
+                            ${reason}
+                        </div>
+                        <div class="reason mismatch">
+                            Palindrome ends here. Recording result...
+                        </div>
+                    `;
+                },
+
+                newLongest: () => {
+                    const palindrome = state.str.substring(state.longestStart, state.longestEnd + 1);
+                    return `
+                        <div class="step-title">New Longest Palindrome!</div>
+                        <div class="step-detail">
+                            Found: <strong>"${palindrome}"</strong>
+                        </div>
+                        <div class="calculation">
+                            Start: ${state.longestStart}, End: ${state.longestEnd}<br>
+                            Length: <strong>${state.longestLength}</strong> (new record!)
+                        </div>
+                        <div class="reason found">
+                            This is now the longest palindrome found so far.
+                        </div>
+                    `;
+                },
+
+                notLonger: () => {
+                    const palindrome = state.str.substring(state.currentStart, state.currentEnd + 1);
+                    return `
+                        <div class="step-title">Palindrome Recorded</div>
+                        <div class="step-detail">
+                            Found: "${palindrome}" (length ${state.currentLength})
+                        </div>
+                        <div class="reason">
+                            Not longer than current best (${state.longestLength}). Continuing search...
+                        </div>
+                    `;
+                },
+
+                complete: () => {
+                    const palindrome = state.str.substring(state.longestStart, state.longestEnd + 1);
+                    return `
+                        <div class="step-title">Search Complete!</div>
+                        <div class="step-detail">
+                            Tested all ${state.str.length} positions as centers
+                            (${state.str.length * 2} total tests: odd + even).
+                        </div>
+                        <div class="calculation">
+                            Longest palindrome: <strong>"${palindrome}"</strong><br>
+                            Length: ${state.longestLength}<br>
+                            Position: [${state.longestStart}, ${state.longestEnd}]
+                        </div>
+                        <div class="reason found">
+                            Time complexity: O(n²), Space: O(1)
+                        </div>
+                    `;
+                }
+            };
+
+            explanation.innerHTML = templates[type] ? templates[type](data) : templates.init ? templates.init() : '';
+        }
+
+        function setStatus(message, type = '') {
+            statusBar.textContent = message;
+            statusBar.className = 'status-bar' + (type ? ` ${type}` : '');
+        }
+
+        function updateTracking() {
+            if (state.str.length === 0) {
+                trackingInfo.style.display = 'none';
+                modeBadge.style.display = 'none';
+                return;
+            }
+
+            trackingInfo.style.display = 'flex';
+            centerProgress.textContent = `${state.centerIndex + 1}/${state.str.length}`;
+            modeText.textContent = state.mode === 'odd' ? 'Odd' : 'Even';
+
+            const longest = state.str.substring(state.longestStart, state.longestEnd + 1);
+            longestText.textContent = `"${longest}" (${state.longestLength})`;
+
+            if (state.phase === 'select_center' || state.phase === 'expand') {
+                modeBadge.style.display = 'inline-flex';
+                modeBadge.className = `mode-badge ${state.mode}`;
+                modeBadge.textContent = state.mode === 'odd'
+                    ? 'Odd-length (single center)'
+                    : 'Even-length (double center)';
+            } else {
+                modeBadge.style.display = 'none';
+            }
+        }
+
+        function updateButtons() {
+            const canRun = state.str.length >= 1 && !state.done;
+            btnStep.disabled = !canRun || state.playing;
+            btnPlay.disabled = !canRun;
+            btnReset.disabled = state.str.length === 0;
+            btnPlay.textContent = state.playing ? 'Pause' : 'Play';
+        }
+
+        function renderAll() {
+            renderString();
+            updateTracking();
+            updateButtons();
+        }
+
+        // ===== Algorithm =====
+        function initRun() {
+            stopPlaying();
+            clearPendingTimers();
+            state.runId++;
+
+            try {
+                const str = stringInput.value.trim();
+
+                if (str.length === 0) {
+                    throw new Error('String cannot be empty');
+                }
+
+                Object.assign(state, {
+                    str,
+                    centerIndex: 0,
+                    mode: 'odd',
+                    left: null,
+                    right: null,
+                    longestStart: 0,
+                    longestEnd: 0,
+                    longestLength: 1,
+                    currentStart: null,
+                    currentEnd: null,
+                    currentLength: 0,
+                    phase: 'select_center',
+                    subStep: 'compare',
+                    iteration: 0,
+                    done: false,
+                    playing: false,
+                    timer: null
+                });
+
+                setStatus(`Loaded ${str.length} characters. Click Step or Play.`, 'info');
+                renderExplanation('init');
+                renderPseudocode(6);
+                renderAll();
+            } catch (e) {
+                setStatus(e.message, 'error');
+                Object.assign(state, {
+                    str: '',
+                    centerIndex: 0,
+                    mode: 'odd',
+                    left: null,
+                    right: null,
+                    done: true
+                });
+                renderAll();
+            }
+        }
+
+        function selectCenter() {
+            if (state.mode === 'odd') {
+                state.left = state.centerIndex;
+                state.right = state.centerIndex;
+                renderPseudocode(8);
+            } else {
+                if (state.centerIndex + 1 >= state.str.length) {
+                    advanceToNextCenter();
+                    return;
+                }
+                state.left = state.centerIndex;
+                state.right = state.centerIndex + 1;
+                renderPseudocode(13);
+            }
+
+            state.phase = 'expand';
+            state.subStep = 'compare';
+            renderExplanation('selectCenter');
+            setStatus(`Testing ${state.mode}-length palindrome at center ${state.centerIndex}`, 'info');
+        }
+
+        function expandStep() {
+            const { str, left, right, subStep } = state;
+
+            if (subStep === 'compare') {
+                state.iteration++;
+
+                const leftInBounds = left >= 0;
+                const rightInBounds = right < str.length;
+                const charsMatch = leftInBounds && rightInBounds && str[left] === str[right];
+
+                if (!leftInBounds || !rightInBounds || !charsMatch) {
+                    renderExplanation('expandStop', {
+                        reason: !charsMatch ? 'mismatch' : 'bounds'
+                    });
+                    renderPseudocode(25);
+                    state.phase = 'record';
+                    setStatus('Expansion stopped. Recording result...', 'info');
+                } else {
+                    renderExplanation('expandMatch');
+                    renderPseudocode(22);
+                    setStatus(`Match: '${str[left]}' == '${str[right]}'. Expanding...`, 'success');
+                    state.subStep = 'move';
+                }
+            } else if (subStep === 'move') {
+                state.left--;
+                state.right++;
+                state.subStep = 'compare';
+            }
+        }
+
+        function recordResult() {
+            const start = state.left + 1;
+            const end = state.right - 1;
+            const length = end - start + 1;
+
+            state.currentStart = start;
+            state.currentEnd = end;
+            state.currentLength = length;
+
+            if (length > state.longestLength) {
+                state.longestStart = start;
+                state.longestEnd = end;
+                state.longestLength = length;
+                renderExplanation('newLongest');
+                renderPseudocode(state.mode === 'odd' ? 10 : 15);
+                const pal = state.str.substring(start, end + 1);
+                setStatus(`New longest: "${pal}" (${length})`, 'success');
+            } else {
+                renderExplanation('notLonger');
+                const pal = state.str.substring(start, end + 1);
+                setStatus(`Found "${pal}" (${length}), not longer than ${state.longestLength}`, 'info');
+            }
+
+            advanceToNextCenter();
+        }
+
+        function advanceToNextCenter() {
+            if (state.mode === 'odd') {
+                state.mode = 'even';
+                state.phase = 'select_center';
+            } else {
+                state.mode = 'odd';
+                state.centerIndex++;
+
+                if (state.centerIndex >= state.str.length) {
+                    state.done = true;
+                    state.phase = 'complete';
+                    renderExplanation('complete');
+                    renderPseudocode(17);
+                    const pal = state.str.substring(state.longestStart, state.longestEnd + 1);
+                    setStatus(`Complete! Longest: "${pal}"`, 'success');
+                    stopPlaying();
+                } else {
+                    state.phase = 'select_center';
+                }
+            }
+        }
+
+        function step() {
+            if (state.done || state.str.length === 0) return;
+
+            switch (state.phase) {
+                case 'select_center':
+                    selectCenter();
+                    break;
+                case 'expand':
+                    expandStep();
+                    break;
+                case 'record':
+                    recordResult();
+                    break;
+            }
+
+            renderAll();
+        }
+
+        function play() {
+            if (state.str.length === 0 || state.done) return;
+
+            if (state.playing) {
+                stopPlaying();
+                setStatus('Paused. Click Step or Play to continue.', 'info');
+                return;
+            }
+
+            state.playing = true;
+            updateButtons();
+            setStatus('Playing...', 'info');
+
+            const tick = () => {
+                if (!state.playing || state.done) {
+                    stopPlaying();
+                    return;
+                }
+                step();
+                if (state.playing && !state.done) {
+                    const delay = Number(speedSlider.value);
+                    state.timer = setTimeout(tick, delay);
+                }
+            };
+
+            state.timer = setTimeout(tick, Number(speedSlider.value));
+        }
+
+        function stopPlaying() {
+            state.playing = false;
+            if (state.timer) {
+                clearTimeout(state.timer);
+                state.timer = null;
+            }
+            updateButtons();
+        }
+
+        function reset() {
+            stopPlaying();
+            initRun();
+        }
+
+        function loadRandom() {
+            const str = generateRandomString();
+            stringInput.value = str;
+            initRun();
+        }
+
+        // ===== Event Listeners =====
+        btnLoad.addEventListener('click', initRun);
+        btnRandom.addEventListener('click', loadRandom);
+        btnStep.addEventListener('click', step);
+        btnPlay.addEventListener('click', play);
+        btnReset.addEventListener('click', reset);
+
+        speedSlider.addEventListener('input', () => {
+            speedValue.textContent = `${speedSlider.value}ms`;
+        });
+
+        stringInput.addEventListener('keypress', e => {
+            if (e.key === 'Enter') initRun();
+        });
+
+        // Initialize on load
+        speedValue.textContent = `${speedSlider.value}ms`;
+    </script>
+</body>
+</html>
