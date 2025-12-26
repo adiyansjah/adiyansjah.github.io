@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Two Pointers: Same Direction (Slow-Fast) | Algorithm Visualizer</title>
+    <style>
+        :root {
+            --bg: transparent;
+            --card: #ffffff;
+            --text: #1a1a1a;
+            --muted: #737373;
+            --border: #e5e5e5;
+            --accent-slow: #3b82f6;
+            --accent-slow-bg: #eff6ff;
+            --accent-fast: #f59e0b;
+            --accent-fast-bg: #fef3c7;
+            --success: #22c55e;
+            --success-bg: #f0fdf4;
+            --error: #ef4444;
+            --error-bg: #fef2f2;
+            --valid-region: #f0fdf4;
+            --radius: 8px;
+            --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--sans);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 32px 20px 48px;
+        }
+
+        /* Header */
+        header {
+            margin-bottom: 32px;
+        }
+
+        h1 {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            letter-spacing: -0.01em;
+            color: var(--accent-slow-bg);
+        }
+
+        .subtitle {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        /* Card */
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 16px;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: flex-end;
+        }
+
+        .input-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 6px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 14px;
+            font-family: var(--mono);
+            transition: border-color 0.15s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--accent-slow);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 10px 18px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: var(--card);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.15s, border-color 0.15s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        button:hover:not(:disabled) {
+            background: var(--bg);
+            border-color: var(--muted);
+        }
+
+        button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        button.primary {
+            background: var(--accent-slow);
+            border-color: var(--accent-slow);
+            color: white;
+        }
+
+        button.primary:hover:not(:disabled) {
+            background: #2563eb;
+        }
+
+        .speed-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .speed-control label {
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .speed-control input[type="range"] {
+            flex: 1;
+            max-width: 200px;
+        }
+
+        .speed-control .speed-value {
+            font-family: var(--mono);
+            font-size: 12px;
+            color: var(--muted);
+            min-width: 70px;
+        }
+
+        /* Visualization */
+        .viz-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .array-viz {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 28px;
+        }
+
+        .cell {
+            position: relative;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--card);
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            font-family: var(--mono);
+            font-size: 16px;
+            font-weight: 600;
+            transition: border-color 0.2s, background-color 0.2s, opacity 0.2s;
+        }
+
+        .cell.valid-region {
+            background: var(--valid-region);
+        }
+
+        .cell.active-slow {
+            border-color: var(--accent-slow);
+            background: var(--accent-slow-bg);
+        }
+
+        .cell.active-fast {
+            border-color: var(--accent-fast);
+            background: var(--accent-fast-bg);
+        }
+
+        .cell.active-slow.active-fast {
+            background: linear-gradient(135deg, var(--accent-slow-bg) 50%, var(--accent-fast-bg) 50%);
+            border-color: var(--success);
+        }
+
+        .cell.duplicate {
+            opacity: 0.3;
+        }
+
+        .cell.completed {
+            border-color: var(--success);
+            background: var(--success-bg);
+        }
+
+        .pointer {
+            position: absolute;
+            bottom: -26px;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 4px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .pointer.slow {
+            background: var(--accent-slow);
+            color: white;
+        }
+
+        .pointer.fast {
+            background: var(--accent-fast);
+            color: white;
+        }
+
+        .cell.show-slow .pointer.slow,
+        .cell.show-fast .pointer.fast {
+            opacity: 1;
+        }
+
+        .cell.show-slow.show-fast .pointer.slow {
+            left: 2px;
+        }
+
+        .cell.show-slow.show-fast .pointer.fast {
+            right: 2px;
+        }
+
+        /* Status */
+        .status-bar {
+            width: 100%;
+            margin-top: 10px;
+            padding: 14px 16px;
+            border-radius: var(--radius);
+            font-size: 14px;
+            text-align: center;
+            background: var(--bg);
+            color: var(--muted);
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .status-bar.success {
+            background: var(--success-bg);
+            color: var(--success);
+        }
+
+        .status-bar.error {
+            background: var(--error-bg);
+            color: var(--error);
+        }
+
+        .status-bar.info {
+            background: var(--accent-slow-bg);
+            color: var(--accent-slow);
+        }
+
+        /* Educational Panels */
+        .panels {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 640px) {
+            .panels {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+
+        .panel-header {
+            padding: 14px 20px;
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .panel-body {
+            padding: 20px;
+        }
+
+        /* Pseudocode */
+        .pseudocode {
+            font-family: var(--mono);
+            font-size: 13px;
+            line-height: 1.9;
+        }
+
+        .code-line {
+            padding: 4px 10px;
+            border-radius: 4px;
+            transition: background-color 0.15s;
+            white-space: pre;
+            border-left: 2px solid transparent;
+        }
+
+        .code-line.highlight {
+            background: var(--accent-slow-bg);
+            border-left-color: var(--accent-slow);
+        }
+
+        .code-line .keyword {
+            color: #7c3aed;
+        }
+
+        .code-line .comment {
+            color: var(--muted);
+        }
+
+        /* Explanation */
+        .explanation {
+            min-height: 120px;
+        }
+
+        .explanation .step-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--text);
+            font-size: 15px;
+        }
+
+        .explanation .step-detail {
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .explanation .calculation {
+            margin-top: 16px;
+            padding: 14px;
+            background: var(--bg);
+            border-radius: var(--radius);
+            font-family: var(--mono);
+            font-size: 14px;
+        }
+
+        .explanation .calculation .highlight-slow {
+            color: var(--accent-slow);
+            font-weight: 600;
+        }
+
+        .explanation .calculation .highlight-fast {
+            color: var(--accent-fast);
+            font-weight: 600;
+        }
+
+        .explanation .reason {
+            margin-top: 14px;
+            padding: 12px 14px;
+            background: var(--accent-slow-bg);
+            border-radius: var(--radius);
+            font-size: 13px;
+            color: var(--accent-slow);
+        }
+
+        .explanation .reason.skip {
+            background: var(--accent-fast-bg);
+            color: #b45309;
+        }
+
+        .explanation .reason.found {
+            background: var(--success-bg);
+            color: var(--success);
+        }
+
+        /* Iteration counter */
+        .iteration-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--muted);
+            margin-bottom: 20px;
+        }
+
+        .iteration-badge .count {
+            font-family: var(--mono);
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 32px;
+            color: var(--muted);
+        }
+
+        .empty-state svg {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 12px;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Two Pointers: Same Direction (Slow-Fast)</h1>
+            <p class="subtitle">Remove duplicates from a sorted array in-place</p>
+        </header>
+
+        <!-- Controls -->
+        <div class="card">
+            <div class="card-title">Configuration</div>
+            <div class="controls">
+                <div class="input-group">
+                    <label for="arrayInput">Sorted Array (comma-separated)</label>
+                    <input type="text" id="arrayInput" value="1, 1, 2, 2, 2, 3, 4, 4, 5" placeholder="1, 1, 2, 3, 3">
+                </div>
+                <div class="btn-group">
+                    <button id="btnLoad" class="primary">Load</button>
+                    <button id="btnRandom">Random</button>
+                </div>
+            </div>
+            <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 16px;">
+                <div class="btn-group">
+                    <button id="btnStep" disabled>Step</button>
+                    <button id="btnPlay" disabled>Play</button>
+                    <button id="btnReset" disabled>Reset</button>
+                </div>
+                <div class="speed-control">
+                    <label>Speed:</label>
+                    <input type="range" id="speedSlider" min="100" max="1500" value="600" step="100">
+                    <span class="speed-value" id="speedValue">600ms</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Visualization -->
+        <div class="card">
+            <div class="viz-container">
+                <div class="iteration-badge">
+                    Iteration: <span class="count" id="iterCount">0</span> |
+                    Length: <span class="count" id="lengthCount">0</span>
+                </div>
+                <div class="array-viz" id="arrayViz">
+                    <div class="empty-state">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16M4 12h16M4 17h7" />
+                        </svg>
+                        <p>Enter an array and click Load to begin</p>
+                    </div>
+                </div>
+                <div class="status-bar" id="statusBar">
+                    Ready to start. Enter a sorted array with duplicates.
+                </div>
+            </div>
+        </div>
+
+        <!-- Educational Panels -->
+        <div class="panels">
+            <!-- Pseudocode -->
+            <div class="panel">
+                <div class="panel-header">Algorithm</div>
+                <div class="panel-body">
+                    <div class="pseudocode" id="pseudocode">
+                        <div class="code-line" data-line="0"><span class="keyword">def</span> remove_duplicates(nums):</div>
+                        <div class="code-line" data-line="1">  <span class="keyword">if not</span> nums:</div>
+                        <div class="code-line" data-line="2">    <span class="keyword">return</span> 0</div>
+                        <div class="code-line" data-line="3">  slow = 0</div>
+                        <div class="code-line" data-line="4">  <span class="keyword">for</span> fast <span class="keyword">in range</span>(1, len(nums)):</div>
+                        <div class="code-line" data-line="5">    <span class="keyword">if</span> nums[fast] != nums[slow]:</div>
+                        <div class="code-line" data-line="6">      slow += 1</div>
+                        <div class="code-line" data-line="7">      nums[slow] = nums[fast]</div>
+                        <div class="code-line" data-line="8">  <span class="keyword">return</span> slow + 1  <span class="comment"># New length</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Explanation -->
+            <div class="panel">
+                <div class="panel-header">What's Happening</div>
+                <div class="panel-body">
+                    <div class="explanation" id="explanation">
+                        <div class="step-title">Ready to Start</div>
+                        <div class="step-detail">
+                            This algorithm removes duplicates from a sorted array in-place.
+                            The slow pointer marks where the next unique element should go,
+                            while the fast pointer scans ahead to find unique elements.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== State =====
+        const state = {
+            arr: [],
+            slow: 0,
+            fast: 1,
+            iteration: 0,
+            done: false,
+            playing: false,
+            timer: null,
+            currentLine: -1,
+            runId: 0,
+            pendingTimers: [],
+            subStep: 'compare', // 'compare', 'skip', 'copy'
+            newLength: 0
+        };
+
+        // ===== DOM Elements =====
+        const $ = id => document.getElementById(id);
+        const arrayInput = $('arrayInput');
+        const arrayViz = $('arrayViz');
+        const iterCount = $('iterCount');
+        const lengthCount = $('lengthCount');
+        const statusBar = $('statusBar');
+        const pseudocode = $('pseudocode');
+        const explanation = $('explanation');
+        const btnLoad = $('btnLoad');
+        const btnRandom = $('btnRandom');
+        const btnStep = $('btnStep');
+        const btnPlay = $('btnPlay');
+        const btnReset = $('btnReset');
+        const speedSlider = $('speedSlider');
+        const speedValue = $('speedValue');
+
+        // ===== Utilities =====
+        function parseArray(text) {
+            const parts = text.split(',').map(s => s.trim()).filter(Boolean);
+            if (parts.length === 0) return [];
+            const nums = parts.map(p => Number(p));
+            if (nums.some(n => isNaN(n))) {
+                throw new Error('Array contains non-numeric values');
+            }
+            return nums;
+        }
+
+        function generateRandomArray() {
+            const length = Math.floor(Math.random() * 7) + 6; // 6-12 elements
+            const arr = [];
+            for (let i = 0; i < length; i++) {
+                // Ensure duplicates by repeating values
+                const value = Math.floor(Math.random() * 15) + 1;
+                const repeat = Math.random() < 0.5 ? 1 : Math.floor(Math.random() * 2) + 1;
+                for (let j = 0; j < repeat && arr.length < length; j++) {
+                    arr.push(value);
+                }
+            }
+            return arr.sort((a, b) => a - b);
+        }
+
+        function clearPendingTimers() {
+            state.pendingTimers.forEach(id => clearTimeout(id));
+            state.pendingTimers = [];
+        }
+
+        // ===== Rendering =====
+        function renderArray() {
+            const { arr, slow, fast, done, newLength } = state;
+
+            if (arr.length === 0) {
+                arrayViz.innerHTML = `
+                    <div class="empty-state">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16M4 12h16M4 17h7" />
+                        </svg>
+                        <p>Enter an array and click Load to begin</p>
+                    </div>
+                `;
+                return;
+            }
+
+            arrayViz.innerHTML = arr.map((value, index) => {
+                const classes = ['cell'];
+
+                // Valid region (deduplicated portion)
+                if (index <= slow && !done) {
+                    classes.push('valid-region');
+                }
+
+                // Show pointers
+                if (slow !== null && index === slow) {
+                    classes.push('active-slow', 'show-slow');
+                }
+                if (fast !== null && index === fast && fast < arr.length) {
+                    classes.push('active-fast', 'show-fast');
+                }
+
+                // Mark duplicates (cells beyond slow that have been checked)
+                if (!done && fast > index && index > slow) {
+                    classes.push('duplicate');
+                }
+
+                // Completed state
+                if (done) {
+                    if (index < newLength) {
+                        classes.push('valid-region');
+                    } else {
+                        classes.push('duplicate');
+                    }
+                }
+
+                return `
+                    <div class="${classes.join(' ')}">
+                        ${value}
+                        <span class="pointer slow">S</span>
+                        <span class="pointer fast">F</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderPseudocode(line) {
+            const lines = pseudocode.querySelectorAll('.code-line');
+            lines.forEach(el => {
+                el.classList.remove('highlight');
+                if (parseInt(el.dataset.line) === line) {
+                    el.classList.add('highlight');
+                }
+            });
+        }
+
+        function renderExplanation(type, data = {}) {
+            const templates = {
+                init: () => `
+                    <div class="step-title">Initialized</div>
+                    <div class="step-detail">
+                        Slow pointer starts at index 0 (first element is always unique).
+                        Fast pointer starts at index 1 to begin searching for the next unique element.
+                    </div>
+                    <div class="calculation">
+                        <span class="highlight-slow">slow = 0</span>,
+                        <span class="highlight-fast">fast = 1</span>
+                        <br>
+                        Array has ${state.arr.length} elements
+                    </div>
+                `,
+                compare: () => {
+                    const slowVal = state.arr[state.slow];
+                    const fastVal = state.arr[state.fast];
+                    const isDuplicate = slowVal === fastVal;
+                    return `
+                        <div class="step-title">Comparing Values</div>
+                        <div class="step-detail">
+                            Check if the element at fast is different from the element at slow.
+                        </div>
+                        <div class="calculation">
+                            nums[<span class="highlight-slow">slow=${state.slow}</span>] vs nums[<span class="highlight-fast">fast=${state.fast}</span>]
+                            <br>
+                            <span class="highlight-slow">${slowVal}</span> ${isDuplicate ? '==' : '!='} <span class="highlight-fast">${fastVal}</span>
+                        </div>
+                        ${isDuplicate ?
+                            '<div class="reason skip">Values are equal - this is a duplicate that should be skipped.</div>' :
+                            '<div class="reason">Values are different - found a unique element to keep!</div>'
+                        }
+                    `;
+                },
+                skip: () => `
+                    <div class="step-title">Skip Duplicate</div>
+                    <div class="step-detail">
+                        Element at fast (${state.arr[state.fast]}) is a duplicate of slow (${state.arr[state.slow]}).
+                        Move fast forward to continue searching.
+                    </div>
+                    <div class="reason skip">
+                        Slow stays at ${state.slow}, fast moves from ${state.fast - 1} → ${state.fast}
+                        <br>
+                        We don't copy duplicates - just skip over them.
+                    </div>
+                `,
+                copy: (oldSlow) => `
+                    <div class="step-title">Copy Unique Element</div>
+                    <div class="step-detail">
+                        Found a unique element! Move slow forward and copy the value from fast.
+                    </div>
+                    <div class="calculation">
+                        1. <span class="highlight-slow">slow</span> moves: ${oldSlow} → ${state.slow}
+                        <br>
+                        2. Copy: nums[<span class="highlight-slow">${state.slow}</span>] = nums[<span class="highlight-fast">${state.fast}</span>] = ${state.arr[state.slow]}
+                        <br>
+                        3. <span class="highlight-fast">fast</span> continues forward
+                    </div>
+                    <div class="reason">
+                        The deduplicated array now has ${state.slow + 1} unique element(s).
+                    </div>
+                `,
+                complete: () => `
+                    <div class="step-title">Complete!</div>
+                    <div class="step-detail">
+                        All elements have been processed. The deduplicated array is in the first ${state.newLength} positions.
+                    </div>
+                    <div class="calculation">
+                        Original length: ${state.arr.length}
+                        <br>
+                        New length: <strong>${state.newLength}</strong>
+                        <br>
+                        Duplicates removed: ${state.arr.length - state.newLength}
+                    </div>
+                    <div class="reason found">
+                        Algorithm completed in O(n) time with O(1) extra space!
+                    </div>
+                `,
+                ready: () => `
+                    <div class="step-title">Ready to Start</div>
+                    <div class="step-detail">
+                        This algorithm removes duplicates from a sorted array in-place.
+                        The slow pointer marks where the next unique element should go,
+                        while the fast pointer scans ahead to find unique elements.
+                    </div>
+                `
+            };
+
+            explanation.innerHTML = templates[type] ? templates[type](data) : templates.ready();
+        }
+
+        function setStatus(message, type = '') {
+            statusBar.textContent = message;
+            statusBar.className = 'status-bar' + (type ? ` ${type}` : '');
+        }
+
+        function updateButtons() {
+            const canRun = state.arr.length >= 1 && !state.done;
+            btnStep.disabled = !canRun || state.playing;
+            btnPlay.disabled = !canRun;
+            btnReset.disabled = state.arr.length === 0;
+            btnPlay.textContent = state.playing ? 'Pause' : 'Play';
+        }
+
+        function renderAll() {
+            renderArray();
+            iterCount.textContent = state.iteration;
+            lengthCount.textContent = state.done ? state.newLength : (state.slow + 1);
+            updateButtons();
+        }
+
+        // ===== Algorithm =====
+        function initRun() {
+            stopPlaying();
+            clearPendingTimers();
+            state.runId += 1;
+
+            try {
+                let arr = parseArray(arrayInput.value);
+
+                if (arr.length === 0) {
+                    throw new Error('Array cannot be empty');
+                }
+
+                // Sort the array
+                arr = [...arr].sort((a, b) => a - b);
+
+                // Reset state
+                Object.assign(state, {
+                    arr,
+                    slow: 0,
+                    fast: 1,
+                    iteration: 0,
+                    done: arr.length === 1,
+                    playing: false,
+                    timer: null,
+                    currentLine: 3,
+                    pendingTimers: [],
+                    subStep: 'compare',
+                    newLength: arr.length === 1 ? 1 : 0
+                });
+
+                if (arr.length === 1) {
+                    setStatus('Array has only 1 element - already unique!', 'success');
+                    renderExplanation('complete');
+                    renderPseudocode(8);
+                } else {
+                    setStatus(`Loaded ${arr.length} elements. Click Step or Play.`, 'info');
+                    renderExplanation('init');
+                    renderPseudocode(3);
+                }
+
+                renderAll();
+            } catch (e) {
+                setStatus(e.message, 'error');
+                Object.assign(state, {
+                    arr: [],
+                    slow: 0,
+                    fast: 1,
+                    iteration: 0,
+                    done: true,
+                    newLength: 0
+                });
+                renderAll();
+            }
+        }
+
+        function step() {
+            if (state.done || state.arr.length === 0) return;
+
+            const { arr, slow, fast } = state;
+
+            // Check if fast reached the end
+            if (fast >= arr.length) {
+                state.done = true;
+                state.newLength = slow + 1;
+                setStatus(`Complete! New length: ${state.newLength}`, 'success');
+                renderExplanation('complete');
+                renderPseudocode(8);
+                renderAll();
+                stopPlaying();
+                return;
+            }
+
+            // Phase 1: Compare
+            if (state.subStep === 'compare') {
+                state.iteration++;
+                renderPseudocode(5);
+                renderExplanation('compare');
+                setStatus(`Comparing: nums[${slow}]=${arr[slow]} vs nums[${fast}]=${arr[fast]}`, 'info');
+                state.subStep = 'action';
+                renderAll();
+                return;
+            }
+
+            // Phase 2: Skip or Copy
+            if (arr[fast] === arr[slow]) {
+                // Skip duplicate
+                state.fast++;
+                renderPseudocode(4);
+                renderExplanation('skip');
+                setStatus(`Duplicate found. Fast moves to ${state.fast}`, 'info');
+            } else {
+                // Copy unique element
+                const oldSlow = slow;
+                state.slow++;
+                state.arr[state.slow] = state.arr[fast];
+                state.fast++;
+                renderPseudocode(7);
+                renderExplanation('copy', oldSlow);
+                setStatus(`Unique element found! Copied to position ${state.slow}`, 'success');
+            }
+
+            // Reset to compare phase
+            state.subStep = 'compare';
+
+            // Check if done after move
+            if (state.fast >= arr.length) {
+                state.done = true;
+                state.newLength = state.slow + 1;
+                setStatus(`Complete! New length: ${state.newLength}`, 'success');
+                renderExplanation('complete');
+                renderPseudocode(8);
+                stopPlaying();
+            }
+
+            renderAll();
+        }
+
+        function play() {
+            if (state.arr.length === 0 || state.done) return;
+
+            if (state.playing) {
+                stopPlaying();
+                setStatus('Paused. Click Step or Play to continue.', 'info');
+                return;
+            }
+
+            state.playing = true;
+            updateButtons();
+            setStatus('Playing...', 'info');
+
+            const tick = () => {
+                if (!state.playing || state.done) {
+                    stopPlaying();
+                    return;
+                }
+                step();
+                if (state.playing && !state.done) {
+                    const delay = Number(speedSlider.value);
+                    state.timer = setTimeout(tick, delay);
+                }
+            };
+
+            state.timer = setTimeout(tick, Number(speedSlider.value));
+        }
+
+        function stopPlaying() {
+            state.playing = false;
+            if (state.timer) {
+                clearTimeout(state.timer);
+                state.timer = null;
+            }
+            updateButtons();
+        }
+
+        function reset() {
+            stopPlaying();
+            initRun();
+        }
+
+        function loadRandom() {
+            const arr = generateRandomArray();
+            arrayInput.value = arr.join(', ');
+            initRun();
+        }
+
+        // ===== Event Listeners =====
+        btnLoad.addEventListener('click', initRun);
+        btnRandom.addEventListener('click', loadRandom);
+        btnStep.addEventListener('click', step);
+        btnPlay.addEventListener('click', play);
+        btnReset.addEventListener('click', reset);
+
+        speedSlider.addEventListener('input', () => {
+            speedValue.textContent = `${speedSlider.value}ms`;
+        });
+
+        arrayInput.addEventListener('keypress', e => {
+            if (e.key === 'Enter') initRun();
+        });
+
+        // Initialize on load
+        speedValue.textContent = `${speedSlider.value}ms`;
+        initRun();
+    </script>
+</body>
+</html>
