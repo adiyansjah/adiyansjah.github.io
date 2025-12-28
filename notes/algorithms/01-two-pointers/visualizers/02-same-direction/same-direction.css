@@ -1,0 +1,72 @@
+/* Algorithm-specific colors */
+:root {
+    --accent: #3b82f6;
+    --accent-bg: #eff6ff;
+    --accent-slow: #3b82f6;
+    --accent-slow-bg: #eff6ff;
+    --accent-fast: #f59e0b;
+    --accent-fast-bg: #fef3c7;
+    --valid-region: #f0fdf4;
+}
+
+/* Algorithm-specific cell states */
+.cell.valid-region {
+    background: var(--valid-region);
+}
+
+.cell.active-slow {
+    border-color: var(--accent-slow);
+    background: var(--accent-slow-bg);
+}
+
+.cell.active-fast {
+    border-color: var(--accent-fast);
+    background: var(--accent-fast-bg);
+}
+
+.cell.active-slow.active-fast {
+    background: linear-gradient(135deg, var(--accent-slow-bg) 50%, var(--accent-fast-bg) 50%);
+    border-color: var(--success);
+}
+
+.cell.duplicate {
+    opacity: 0.3;
+}
+
+/* Pointer colors */
+.pointer.slow {
+    background: var(--accent-slow);
+}
+
+.pointer.fast {
+    background: var(--accent-fast);
+}
+
+.cell.show-slow .pointer.slow,
+.cell.show-fast .pointer.fast {
+    opacity: 1;
+}
+
+.cell.show-slow.show-fast .pointer.slow {
+    left: 2px;
+}
+
+.cell.show-slow.show-fast .pointer.fast {
+    right: 2px;
+}
+
+/* Algorithm-specific explanation styles */
+.explanation .calculation .highlight-slow {
+    color: var(--accent-slow);
+    font-weight: 600;
+}
+
+.explanation .calculation .highlight-fast {
+    color: var(--accent-fast);
+    font-weight: 600;
+}
+
+.explanation .reason.skip {
+    background: var(--accent-fast-bg);
+    color: #b45309;
+}

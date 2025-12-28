@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Two Pointers: Same Direction (Slow-Fast) | Algorithm Visualizer</title>
+    <link rel="stylesheet" href="../shared.css">
+    <link rel="stylesheet" href="same-direction.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Two Pointers: Same Direction (Slow-Fast)</h1>
+            <p class="subtitle">Remove duplicates from a sorted array in-place</p>
+        </header>
+
+        <!-- Controls -->
+        <div class="card">
+            <div class="card-title">Configuration</div>
+            <div class="controls">
+                <div class="input-group">
+                    <label for="arrayInput">Sorted Array (comma-separated)</label>
+                    <input type="text" id="arrayInput" value="1, 1, 2, 2, 2, 3, 4, 4, 5" placeholder="1, 1, 2, 3, 3">
+                </div>
+                <div class="btn-group">
+                    <button id="btnLoad" class="primary">Load</button>
+                    <button id="btnRandom">Random</button>
+                </div>
+            </div>
+            <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 16px;">
+                <div class="btn-group">
+                    <button id="btnStep" disabled>Step</button>
+                    <button id="btnPlay" disabled>Play</button>
+                    <button id="btnReset" disabled>Reset</button>
+                </div>
+                <div class="speed-control">
+                    <label>Speed:</label>
+                    <input type="range" id="speedSlider" min="100" max="1500" value="600" step="100">
+                    <span class="speed-value" id="speedValue">600ms</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Visualization -->
+        <div class="card">
+            <div class="viz-container">
+                <div class="iteration-badge">
+                    Iteration: <span class="count" id="iterCount">0</span> |
+                    Length: <span class="count" id="lengthCount">0</span>
+                </div>
+                <div class="array-viz" id="arrayViz">
+                    <div class="empty-state">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16M4 12h16M4 17h7" />
+                        </svg>
+                        <p>Enter an array and click Load to begin</p>
+                    </div>
+                </div>
+                <div class="status-bar" id="statusBar">
+                    Ready to start. Enter a sorted array with duplicates.
+                </div>
+            </div>
+        </div>
+
+        <!-- Educational Panels -->
+        <div class="panels">
+            <!-- Pseudocode -->
+            <div class="panel">
+                <div class="panel-header">Algorithm</div>
+                <div class="panel-body">
+                    <div class="pseudocode" id="pseudocode">
+                        <div class="code-line" data-line="0"><span class="keyword">def</span> remove_duplicates(nums):</div>
+                        <div class="code-line" data-line="1">  <span class="keyword">if not</span> nums:</div>
+                        <div class="code-line" data-line="2">    <span class="keyword">return</span> 0</div>
+                        <div class="code-line" data-line="3">  slow = 0</div>
+                        <div class="code-line" data-line="4">  <span class="keyword">for</span> fast <span class="keyword">in range</span>(1, len(nums)):</div>
+                        <div class="code-line" data-line="5">    <span class="keyword">if</span> nums[fast] != nums[slow]:</div>
+                        <div class="code-line" data-line="6">      slow += 1</div>
+                        <div class="code-line" data-line="7">      nums[slow] = nums[fast]</div>
+                        <div class="code-line" data-line="8">  <span class="keyword">return</span> slow + 1  <span class="comment"># New length</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Explanation -->
+            <div class="panel">
+                <div class="panel-header">What's Happening</div>
+                <div class="panel-body">
+                    <div class="explanation" id="explanation">
+                        <div class="step-title">Ready to Start</div>
+                        <div class="step-detail">
+                            This algorithm removes duplicates from a sorted array in-place.
+                            The slow pointer marks where the next unique element should go,
+                            while the fast pointer scans ahead to find unique elements.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="same-direction.js"></script>
+</body>
+</html>

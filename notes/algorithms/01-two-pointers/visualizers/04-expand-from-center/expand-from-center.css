@@ -1,0 +1,164 @@
+/* Algorithm-specific colors */
+:root {
+    --accent: #8b5cf6;
+    --accent-bg: #f5f3ff;
+    --accent-center: #8b5cf6;
+    --accent-center-bg: #f5f3ff;
+    --accent-l: #3b82f6;
+    --accent-l-bg: #eff6ff;
+    --accent-r: #f59e0b;
+    --accent-r-bg: #fef3c7;
+    --match: #22c55e;
+    --match-bg: #f0fdf4;
+    --mismatch: #ef4444;
+    --mismatch-bg: #fef2f2;
+    --longest: #06b6d4;
+    --longest-bg: #cffafe;
+}
+
+/* Mode badge */
+.mode-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: var(--radius);
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 12px;
+}
+
+.mode-badge.odd {
+    background: var(--accent-center-bg);
+    color: var(--accent-center);
+    border: 1px solid var(--accent-center);
+}
+
+.mode-badge.even {
+    background: var(--accent-r-bg);
+    color: #b45309;
+    border: 1px solid var(--accent-r);
+}
+
+/* Tracking info */
+.tracking-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.badge {
+    padding: 6px 12px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.badge strong {
+    color: var(--text);
+    font-family: var(--mono);
+}
+
+/* String visualization */
+.string-viz {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+}
+
+/* Cell states */
+.cell.center {
+    border-color: var(--accent-center);
+    background: var(--accent-center-bg);
+}
+
+.cell.active-l {
+    border-color: var(--accent-l);
+    background: var(--accent-l-bg);
+}
+
+.cell.active-r {
+    border-color: var(--accent-r);
+    background: var(--accent-r-bg);
+}
+
+.cell.active-l.active-r {
+    background: linear-gradient(135deg, var(--accent-l-bg) 50%, var(--accent-r-bg) 50%);
+}
+
+.cell.matching {
+    background: var(--match-bg);
+}
+
+.cell.mismatch {
+    background: var(--mismatch-bg);
+    animation: flash 0.3s;
+}
+
+.cell.longest {
+    border-color: var(--longest);
+    background: var(--longest-bg);
+}
+
+.cell.inactive {
+    opacity: 0.3;
+}
+
+@keyframes flash {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+/* Pointer colors */
+.pointer.center {
+    background: var(--accent-center);
+}
+
+.pointer.left {
+    background: var(--accent-l);
+}
+
+.pointer.right {
+    background: var(--accent-r);
+}
+
+.cell.show-center .pointer.center,
+.cell.show-l .pointer.left,
+.cell.show-r .pointer.right {
+    opacity: 1;
+}
+
+.cell.show-l.show-r .pointer.left {
+    left: 2px;
+}
+
+.cell.show-l.show-r .pointer.right {
+    right: 2px;
+}
+
+/* Explanation highlights */
+.explanation .calculation .highlight-l {
+    color: var(--accent-l);
+    font-weight: 600;
+}
+
+.explanation .calculation .highlight-r {
+    color: var(--accent-r);
+    font-weight: 600;
+}
+
+.explanation .calculation .highlight-center {
+    color: var(--accent-center);
+    font-weight: 600;
+}
+
+.explanation .reason.mismatch {
+    background: var(--mismatch-bg);
+    color: var(--mismatch);
+}

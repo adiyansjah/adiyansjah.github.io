@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Two Pointers: Backward Fill | Algorithm Visualizer</title>
+    <link rel="stylesheet" href="../shared.css">
+    <link rel="stylesheet" href="backward-fill.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Two Pointers: Backward Fill</h1>
+            <p class="subtitle">Merge two sorted arrays in-place by filling from the end</p>
+        </header>
+
+        <!-- Controls -->
+        <div class="card">
+            <div class="card-title">Configuration</div>
+            <div class="controls">
+                <div class="input-row">
+                    <div class="input-group">
+                        <label for="nums1Input">Array 1 (sorted)</label>
+                        <input type="text" id="nums1Input" value="1, 2, 3" placeholder="1, 2, 3">
+                    </div>
+                    <div class="input-group">
+                        <label for="nums2Input">Array 2 (sorted)</label>
+                        <input type="text" id="nums2Input" value="2, 5, 6" placeholder="2, 5, 6">
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <button id="btnLoad" class="primary">Load</button>
+                    <button id="btnRandom">Random</button>
+                </div>
+            </div>
+            <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 16px;">
+                <div class="btn-group">
+                    <button id="btnStep" disabled>Step</button>
+                    <button id="btnPlay" disabled>Play</button>
+                    <button id="btnReset" disabled>Reset</button>
+                </div>
+                <div class="speed-control">
+                    <label>Speed:</label>
+                    <input type="range" id="speedSlider" min="100" max="1500" value="600" step="100">
+                    <span class="speed-value" id="speedValue">600ms</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Visualization -->
+        <div class="card">
+            <div class="viz-container">
+                <div class="iteration-badge">
+                    Iteration: <span class="count" id="iterCount">0</span>
+                </div>
+                <div id="nums2Reference" class="nums2-reference" style="display: none;">
+                    <span class="label">nums2:</span>
+                    <div class="mini-array" id="nums2MiniArray"></div>
+                </div>
+                <div class="array-viz" id="arrayViz">
+                    <div class="empty-state">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16M4 12h16M4 17h7" />
+                        </svg>
+                        <p>Enter two sorted arrays and click Load to begin</p>
+                    </div>
+                </div>
+                <div class="status-bar" id="statusBar">
+                    Ready to start. Enter two sorted arrays.
+                </div>
+            </div>
+        </div>
+
+        <!-- Educational Panels -->
+        <div class="panels">
+            <!-- Pseudocode -->
+            <div class="panel">
+                <div class="panel-header">Algorithm</div>
+                <div class="panel-body">
+                    <div class="pseudocode" id="pseudocode">
+                        <div class="code-line" data-line="0"><span class="keyword">def</span> merge(nums1, m, nums2, n):</div>
+                        <div class="code-line" data-line="1">  p1 = m - 1           <span class="comment"># last in nums1</span></div>
+                        <div class="code-line" data-line="2">  p2 = n - 1           <span class="comment"># last in nums2</span></div>
+                        <div class="code-line" data-line="3">  write = m + n - 1    <span class="comment"># write position</span></div>
+                        <div class="code-line" data-line="4"></div>
+                        <div class="code-line" data-line="5">  <span class="keyword">while</span> p2 >= 0:</div>
+                        <div class="code-line" data-line="6">    <span class="keyword">if</span> p1 >= 0 and nums1[p1] > nums2[p2]:</div>
+                        <div class="code-line" data-line="7">      nums1[write] = nums1[p1]</div>
+                        <div class="code-line" data-line="8">      p1 -= 1</div>
+                        <div class="code-line" data-line="9">    <span class="keyword">else</span>:</div>
+                        <div class="code-line" data-line="10">      nums1[write] = nums2[p2]</div>
+                        <div class="code-line" data-line="11">      p2 -= 1</div>
+                        <div class="code-line" data-line="12">    write -= 1</div>
+                        <div class="code-line" data-line="13"></div>
+                        <div class="code-line" data-line="14">  <span class="comment"># nums1 elements already in place!</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Explanation -->
+            <div class="panel">
+                <div class="panel-header">What's Happening</div>
+                <div class="panel-body">
+                    <div class="explanation" id="explanation">
+                        <div class="step-title">Ready to Start</div>
+                        <div class="step-detail">
+                            This algorithm merges two sorted arrays in-place using backward fill.
+                            By filling from the end, we avoid overwriting unprocessed elements.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="backward-fill.js"></script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+/* Algorithm-specific colors */
+:root {
+    --accent: #3b82f6;
+    --accent-bg: #eff6ff;
+    --accent-l: #3b82f6;
+    --accent-l-bg: #eff6ff;
+    --accent-r: #f59e0b;
+    --accent-r-bg: #fefce8;
+}
+
+.input-group {
+    min-width: 140px;
+}
+
+/* Cell states */
+.cell.active-l {
+    border-color: var(--accent-l);
+    background: var(--accent-l-bg);
+}
+
+.cell.active-r {
+    border-color: var(--accent-r);
+    background: var(--accent-r-bg);
+}
+
+.cell.active-l.active-r {
+    background: linear-gradient(135deg, var(--accent-l-bg) 50%, var(--accent-r-bg) 50%);
+    border-color: var(--success);
+}
+
+.cell.found {
+    border-color: var(--success);
+    background: var(--success-bg);
+}
+
+.cell.eliminated {
+    opacity: 0.3;
+}
+
+/* Pointer colors */
+.pointer.left {
+    background: var(--accent-l);
+}
+
+.pointer.right {
+    background: var(--accent-r);
+}
+
+.cell.show-l .pointer.left,
+.cell.show-r .pointer.right {
+    opacity: 1;
+}
+
+.cell.show-l.show-r .pointer.left {
+    left: 2px;
+}
+
+.cell.show-l.show-r .pointer.right {
+    right: 2px;
+}
+
+/* Explanation highlights */
+.explanation .calculation .highlight-l {
+    color: var(--accent-l);
+    font-weight: 600;
+}
+
+.explanation .calculation .highlight-r {
+    color: var(--accent-r);
+    font-weight: 600;
+}
+
+.explanation .reason.move-r {
+    background: var(--accent-r-bg);
+    color: #b45309;
+}

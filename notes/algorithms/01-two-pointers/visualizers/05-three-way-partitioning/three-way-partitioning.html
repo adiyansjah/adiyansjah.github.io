@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Two Pointers: Three-Way Partitioning | Algorithm Visualizer</title>
+    <link rel="stylesheet" href="../shared.css">
+    <link rel="stylesheet" href="three-way-partitioning.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Two Pointers: Three-Way Partitioning</h1>
+            <p class="subtitle">Sort array of 0s, 1s, and 2s in-place (Dutch National Flag)</p>
+        </header>
+
+        <!-- Controls -->
+        <div class="card">
+            <div class="card-title">Configuration</div>
+            <div class="controls">
+                <div class="input-group">
+                    <label for="arrayInput">Array (0s, 1s, 2s comma-separated)</label>
+                    <input type="text" id="arrayInput" value="2, 0, 2, 1, 1, 0" placeholder="2, 0, 1, 2, 1, 0">
+                </div>
+                <div class="btn-group">
+                    <button id="btnLoad" class="primary">Load</button>
+                    <button id="btnRandom">Random</button>
+                </div>
+            </div>
+            <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 16px;">
+                <div class="btn-group">
+                    <button id="btnStep" disabled>Step</button>
+                    <button id="btnPlay" disabled>Play</button>
+                    <button id="btnReset" disabled>Reset</button>
+                </div>
+                <div class="speed-control">
+                    <label>Speed:</label>
+                    <input type="range" id="speedSlider" min="100" max="1500" value="600" step="100">
+                    <span class="speed-value" id="speedValue">600ms</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Visualization -->
+        <div class="card">
+            <div class="viz-container">
+                <div class="iteration-badge">
+                    Iteration: <span class="count" id="iterCount">0</span>
+                </div>
+                <div class="array-viz" id="arrayViz">
+                    <div class="empty-state">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16M4 12h16M4 17h7" />
+                        </svg>
+                        <p>Enter an array and click Load to begin</p>
+                    </div>
+                </div>
+                <div class="status-bar" id="statusBar">
+                    Ready to start. Enter an array of 0s, 1s, and 2s.
+                </div>
+            </div>
+        </div>
+
+        <!-- Educational Panels -->
+        <div class="panels">
+            <!-- Pseudocode -->
+            <div class="panel">
+                <div class="panel-header">Algorithm</div>
+                <div class="panel-body">
+                    <div class="pseudocode" id="pseudocode">
+                        <div class="code-line" data-line="0"><span class="keyword">def</span> sort_colors(nums):</div>
+                        <div class="code-line" data-line="1">  low = 0              <span class="comment"># next position for 0</span></div>
+                        <div class="code-line" data-line="2">  mid = 0              <span class="comment"># current position</span></div>
+                        <div class="code-line" data-line="3">  high = len(nums) - 1 <span class="comment"># next position for 2</span></div>
+                        <div class="code-line" data-line="4"></div>
+                        <div class="code-line" data-line="5">  <span class="keyword">while</span> mid <= high:</div>
+                        <div class="code-line" data-line="6">    <span class="keyword">if</span> nums[mid] == 0:</div>
+                        <div class="code-line" data-line="7">      swap(nums[low], nums[mid])</div>
+                        <div class="code-line" data-line="8">      low += 1</div>
+                        <div class="code-line" data-line="9">      mid += 1</div>
+                        <div class="code-line" data-line="10">    <span class="keyword">elif</span> nums[mid] == 2:</div>
+                        <div class="code-line" data-line="11">      swap(nums[mid], nums[high])</div>
+                        <div class="code-line" data-line="12">      high -= 1</div>
+                        <div class="code-line" data-line="13">      <span class="comment"># Don't increment mid!</span></div>
+                        <div class="code-line" data-line="14">    <span class="keyword">else</span>:  <span class="comment"># nums[mid] == 1</span></div>
+                        <div class="code-line" data-line="15">      mid += 1</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Explanation -->
+            <div class="panel">
+                <div class="panel-header">What's Happening</div>
+                <div class="panel-body">
+                    <div class="explanation" id="explanation">
+                        <div class="step-title">Ready to Start</div>
+                        <div class="step-detail">
+                            This algorithm sorts an array of 0s, 1s, and 2s in-place.
+                            It uses three pointers to partition the array into three sections.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="three-way-partitioning.js"></script>
+</body>
+</html>

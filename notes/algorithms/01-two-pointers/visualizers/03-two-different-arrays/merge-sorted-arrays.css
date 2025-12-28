@@ -1,0 +1,148 @@
+/* Algorithm-specific colors */
+:root {
+    --accent: #3b82f6;
+    --accent-bg: #eff6ff;
+    --accent-arr1: #3b82f6;
+    --accent-arr1-bg: #eff6ff;
+    --accent-arr2: #f59e0b;
+    --accent-arr2-bg: #fef3c7;
+    --accent-merged: #22c55e;
+    --accent-merged-bg: #f0fdf4;
+    --pointer-i: #3b82f6;
+    --pointer-j: #f59e0b;
+    --pointer-k: #22c55e;
+    --comparing: #a78bfa;
+    --comparing-bg: #f5f3ff;
+    --copying: #22c55e;
+    --copying-bg: #f0fdf4;
+}
+
+/* Array sections */
+.array-section {
+    width: 100%;
+    margin-bottom: 24px;
+}
+
+.array-label {
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-align: center;
+}
+
+.array-label.arr1 { color: var(--accent-arr1); }
+.array-label.arr2 { color: var(--accent-arr2); }
+.array-label.merged { color: var(--accent-merged); }
+
+.array-viz {
+    min-height: 60px;
+}
+
+/* Cell states */
+.cell.active-i {
+    border-color: var(--accent-arr1);
+    background: var(--accent-arr1-bg);
+}
+
+.cell.active-j {
+    border-color: var(--accent-arr2);
+    background: var(--accent-arr2-bg);
+}
+
+.cell.active-k {
+    border-color: var(--accent-merged);
+    background: var(--accent-merged-bg);
+}
+
+.cell.comparing {
+    border-color: var(--comparing);
+    background: var(--comparing-bg);
+}
+
+.cell.copying {
+    border-color: var(--copying);
+    background: var(--copying-bg);
+    animation: pulse 0.3s ease-in-out;
+}
+
+.cell.completed {
+    background: var(--success-bg);
+    opacity: 0.7;
+}
+
+.cell.exhausted {
+    opacity: 0.3;
+}
+
+.cell.placeholder {
+    opacity: 0.2;
+    border-style: dashed;
+}
+
+.empty-cell {
+    color: var(--muted);
+    font-size: 13px;
+    padding: 12px;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+/* Pointer colors */
+.pointer.i {
+    background: var(--pointer-i);
+}
+
+.pointer.j {
+    background: var(--pointer-j);
+}
+
+.pointer.k {
+    background: var(--pointer-k);
+}
+
+.cell.show-i .pointer.i,
+.cell.show-j .pointer.j,
+.cell.show-k .pointer.k {
+    opacity: 1;
+}
+
+/* Status bar adjusted margin */
+.status-bar {
+    margin-top: 20px;
+}
+
+/* Code highlighting */
+.code-line.highlight {
+    background: var(--accent-merged-bg);
+    border-left-color: var(--accent-merged);
+}
+
+/* Explanation highlights */
+.explanation {
+    min-height: 140px;
+}
+
+.explanation .calculation .highlight-arr1 {
+    color: var(--accent-arr1);
+    font-weight: 600;
+}
+
+.explanation .calculation .highlight-arr2 {
+    color: var(--accent-arr2);
+    font-weight: 600;
+}
+
+.explanation .calculation .highlight-merged {
+    color: var(--accent-merged);
+    font-weight: 600;
+}
+
+.explanation .reason.arr2 {
+    background: var(--accent-arr2-bg);
+    color: #b45309;
+}

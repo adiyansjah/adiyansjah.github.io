@@ -1,0 +1,188 @@
+/* Algorithm-specific colors */
+:root {
+    --accent: #a78bfa;
+    --accent-bg: #f5f3ff;
+    --pointer-p1: #3b82f6;
+    --pointer-p1-bg: #eff6ff;
+    --pointer-p2: #f59e0b;
+    --pointer-p2-bg: #fef3c7;
+    --pointer-write: #22c55e;
+    --pointer-write-bg: #f0fdf4;
+    --comparing: #a78bfa;
+    --comparing-bg: #f5f3ff;
+}
+
+/* nums2 Reference */
+.nums2-reference {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding: 10px 16px;
+    background: var(--pointer-p2-bg);
+    border: 1px solid var(--pointer-p2);
+    border-radius: var(--radius);
+    font-size: 13px;
+    opacity: 1;
+    transition: opacity 0.3s;
+}
+
+.nums2-reference.exhausted {
+    opacity: 0.3;
+}
+
+.nums2-reference .label {
+    font-weight: 600;
+    color: var(--pointer-p2);
+}
+
+.nums2-reference .mini-array {
+    display: flex;
+    gap: 6px;
+}
+
+.mini-cell {
+    position: relative;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 2px solid var(--border);
+    border-radius: 4px;
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 600;
+    transition: border-color 0.2s, background-color 0.2s;
+}
+
+.mini-cell.active-p2 {
+    border-color: var(--pointer-p2);
+    background: white;
+}
+
+.mini-cell.exhausted {
+    opacity: 0.3;
+}
+
+.mini-pointer {
+    position: absolute;
+    bottom: -20px;
+    font-size: 9px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 3px;
+    background: var(--pointer-p2);
+    color: white;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.mini-cell.active-p2 .mini-pointer {
+    opacity: 1;
+}
+
+/* Cell states */
+.cell.extra-space {
+    opacity: 0.3;
+    border-style: dashed;
+    color: var(--muted);
+}
+
+.cell.filled {
+    background: var(--success-bg);
+    opacity: 0.8;
+}
+
+.cell.p1-active {
+    border-color: var(--pointer-p1);
+    background: var(--pointer-p1-bg);
+}
+
+.cell.write-active {
+    border-color: var(--pointer-write);
+    background: var(--pointer-write-bg);
+}
+
+.cell.comparing {
+    border-color: var(--comparing);
+    background: var(--comparing-bg);
+}
+
+.cell.just-written {
+    animation: write-pulse 0.4s ease;
+}
+
+@keyframes write-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+}
+
+/* Pointer colors */
+.pointer {
+    white-space: nowrap;
+}
+
+.pointer.p1 {
+    background: var(--pointer-p1);
+}
+
+.pointer.write {
+    background: var(--pointer-write);
+}
+
+.cell.show-p1 .pointer.p1,
+.cell.show-write .pointer.write {
+    opacity: 1;
+}
+
+.cell.show-p1.show-write .pointer.p1 {
+    left: -2px;
+}
+
+.cell.show-p1.show-write .pointer.write {
+    right: -2px;
+}
+
+/* Code highlighting */
+.code-line.highlight {
+    background: var(--comparing-bg);
+    border-left-color: var(--comparing);
+}
+
+/* Explanation highlights */
+.explanation .calculation .highlight-p1 {
+    color: var(--pointer-p1);
+    font-weight: 600;
+}
+
+.explanation .calculation .highlight-p2 {
+    color: var(--pointer-p2);
+    font-weight: 600;
+}
+
+.explanation .calculation .highlight-write {
+    color: var(--pointer-write);
+    font-weight: 600;
+}
+
+.explanation .reason {
+    background: var(--comparing-bg);
+    color: var(--comparing);
+}
+
+.explanation .reason.p1 {
+    background: var(--pointer-p1-bg);
+    color: var(--pointer-p1);
+}
+
+.explanation .reason.p2 {
+    background: var(--pointer-p2-bg);
+    color: #b45309;
+}
+
+.explanation .reason.complete {
+    background: var(--success-bg);
+    color: var(--success);
+}

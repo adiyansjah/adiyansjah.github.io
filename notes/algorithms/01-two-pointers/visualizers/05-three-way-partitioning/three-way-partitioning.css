@@ -1,0 +1,138 @@
+/* Algorithm-specific colors */
+:root {
+    --accent: #7c3aed;
+    --accent-bg: #f5f3ff;
+    --accent-low: #3b82f6;
+    --accent-low-bg: #eff6ff;
+    --accent-mid: #7c3aed;
+    --accent-mid-bg: #f5f3ff;
+    --accent-high: #f59e0b;
+    --accent-high-bg: #fefce8;
+    --section-zero: #dcfce7;
+    --section-one: #dbeafe;
+    --section-two: #fee2e2;
+}
+
+/* Cell states */
+.cell.active-low {
+    border-color: var(--accent-low);
+    background: var(--accent-low-bg);
+}
+
+.cell.active-mid {
+    border-color: var(--accent-mid);
+    background: var(--accent-mid-bg);
+}
+
+.cell.active-high {
+    border-color: var(--accent-high);
+    background: var(--accent-high-bg);
+}
+
+.cell.section-zeros {
+    background: var(--section-zero);
+    border-color: var(--success);
+}
+
+.cell.section-ones {
+    background: var(--section-one);
+    border-color: var(--accent-low);
+}
+
+.cell.section-twos {
+    background: var(--section-two);
+    border-color: var(--error);
+}
+
+.cell.unprocessed {
+    opacity: 0.5;
+}
+
+.cell.swapped {
+    transform: scale(1.1);
+    animation: swap-pulse 0.3s ease;
+}
+
+@keyframes swap-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+}
+
+/* Pointer colors */
+.pointer.low {
+    background: var(--accent-low);
+}
+
+.pointer.mid {
+    background: var(--accent-mid);
+}
+
+.pointer.high {
+    background: var(--accent-high);
+}
+
+.cell.show-low .pointer.low,
+.cell.show-mid .pointer.mid,
+.cell.show-high .pointer.high {
+    opacity: 1;
+}
+
+.cell.show-low.show-mid .pointer.low {
+    left: -2px;
+}
+
+.cell.show-low.show-mid .pointer.mid {
+    right: -2px;
+}
+
+.cell.show-mid.show-high .pointer.mid {
+    left: -2px;
+}
+
+.cell.show-mid.show-high .pointer.high {
+    right: -2px;
+}
+
+.cell.show-low.show-mid.show-high .pointer.low {
+    left: -18px;
+}
+
+.cell.show-low.show-mid.show-high .pointer.mid {
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.cell.show-low.show-mid.show-high .pointer.high {
+    right: -18px;
+}
+
+/* Explanation highlights */
+.explanation .calculation .highlight-low {
+    color: var(--accent-low);
+    font-weight: 600;
+}
+
+.explanation .calculation .highlight-mid {
+    color: var(--accent-mid);
+    font-weight: 600;
+}
+
+.explanation .calculation .highlight-high {
+    color: var(--accent-high);
+    font-weight: 600;
+}
+
+.explanation .reason.swap-low {
+    background: var(--accent-low-bg);
+    color: var(--accent-low);
+}
+
+.explanation .reason.swap-high {
+    background: var(--accent-high-bg);
+    color: #b45309;
+}
+
+.explanation .reason.complete {
+    background: var(--success-bg);
+    color: var(--success);
+}
