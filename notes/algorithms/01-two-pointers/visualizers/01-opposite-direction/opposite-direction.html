@@ -75,26 +75,17 @@
                 <div class="panel-header">Algorithm</div>
                 <div class="panel-body">
                     <div class="pseudocode" id="pseudocode">
-                        <div class="code-line" data-line="0"><span class="keyword">def</span> two_sum(arr, target):
-                        </div>
-                        <div class="code-line" data-line="1"> L, R = 0, len(arr) - 1</div>
-                        <div class="code-line" data-line="2"> <span class="keyword">while</span> L < R:</div>
-                                <div class="code-line" data-line="3"> sum = arr[L] + arr[R]</div>
-                                <div class="code-line" data-line="4"> <span class="keyword">if</span> sum == target:
-                                </div>
-                                <div class="code-line" data-line="5"> <span class="keyword">return</span> [L, R] <span
-                                        class="comment"># Found!</span></div>
-                                <div class="code-line" data-line="6"> <span class="keyword">elif</span> sum <
-                                        target:</div>
-                                        <div class="code-line" data-line="7"> L += 1 <span class="comment"># Need
-                                                larger</span></div>
-                                        <div class="code-line" data-line="8"> <span class="keyword">else</span>:</div>
-                                        <div class="code-line" data-line="9"> R -= 1 <span class="comment"># Need
-                                                smaller</span></div>
-                                        <div class="code-line" data-line="10"> <span class="keyword">return</span> None
-                                            <span class="comment"># Not found</span></div>
-                                </div>
-                        </div>
+                        <div class="code-line" data-line="0"><span class="keyword">def</span> two_sum(arr, target):</div>
+                        <div class="code-line" data-line="1">    L, R = 0, len(arr) - 1</div>
+                        <div class="code-line" data-line="2">    <span class="keyword">while</span> L < R:</div>
+                        <div class="code-line" data-line="3">        sum = arr[L] + arr[R]</div>
+                        <div class="code-line" data-line="4">        <span class="keyword">if</span> sum == target:</div>
+                        <div class="code-line" data-line="5">            <span class="keyword">return</span> [L, R] <span class="comment"># Found!</span></div>
+                        <div class="code-line" data-line="6">        <span class="keyword">elif</span> sum < target:</div>
+                        <div class="code-line" data-line="7">            L += 1 <span class="comment"># Need larger</span></div>
+                        <div class="code-line" data-line="8">        <span class="keyword">else</span>:</div>
+                        <div class="code-line" data-line="9">            R -= 1 <span class="comment"># Need smaller</span></div>
+                        <div class="code-line" data-line="10">    <span class="keyword">return</span> None <span class="comment"># Not found</span></div>
                     </div>
 
                     <!-- Explanation -->
