@@ -1,0 +1,34 @@
+/* Variable-Min Window specific styles */
+
+/* Sum display styling */
+.sum-value {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 48px;
+    height: 36px;
+    padding: 0 14px;
+    background: var(--accent-bg);
+    border: 2px solid var(--accent);
+    border-radius: var(--radius);
+    font-family: var(--mono);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--accent-dark);
+}
+
+.sum-comparison {
+    margin-left: 12px;
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--muted);
+}
+
+.sum-comparison.valid {
+    color: var(--success);
+    font-weight: 600;
+}
+
+.sum-comparison.invalid {
+    color: var(--muted);
+}
