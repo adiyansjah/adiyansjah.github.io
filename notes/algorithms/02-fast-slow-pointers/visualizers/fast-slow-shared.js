@@ -172,7 +172,33 @@ function createArrow(from, to, curved = false) {
     const dy = to.y - from.y;
     const len = Math.sqrt(dx * dx + dy * dy);
 
-    if (len === 0) return null;
+    // Handle self-loop (from === to)
+    if (len === 0) {
+        // Draw a loop arrow that goes out to the right and back
+        const loopRadius = halfNode * 0.8;
+        const startX = from.x + halfNode;  // Start from right edge
+        const startY = from.y;
+
+        // Loop goes out to the right and curves back
+        const ctrlX1 = from.x + halfNode + loopRadius * 1.5;
+        const ctrlY1 = from.y - loopRadius;
+        const ctrlX2 = from.x + halfNode + loopRadius * 1.5;
+        const ctrlY2 = from.y + loopRadius;
+        const endX = from.x + halfNode;
+        const endY = from.y + arrowSize;  // End slightly below start for arrowhead
+
+        const pathD = `M ${startX} ${startY - 2} C ${ctrlX1} ${ctrlY1}, ${ctrlX2} ${ctrlY2}, ${endX} ${endY}`;
+
+        const path = createSVGElement('path', {
+            d: pathD,
+            stroke: '#9ca3af',
+            'stroke-width': '2',
+            fill: 'none',
+            'marker-end': 'url(#arrowhead)'
+        });
+
+        return path;
+    }
 
     // Normalize direction
     const nx = dx / len;

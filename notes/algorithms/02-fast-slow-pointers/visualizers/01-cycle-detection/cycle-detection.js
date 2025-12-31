@@ -141,7 +141,16 @@
         elements.phase1.classList.remove('active', 'completed');
         elements.phase2.classList.remove('active', 'completed');
 
-        if (state.phase === 0) {
+        // Check done state FIRST (before phase checks)
+        if (state.done) {
+            // Algorithm complete
+            if (state.hasCycle) {
+                elements.phase1.classList.add('completed');
+                elements.phase2.classList.add('completed');
+            } else {
+                elements.phase1.classList.add('completed');
+            }
+        } else if (state.phase === 0) {
             // Not started - phase 1 ready
             elements.phase1.classList.add('active');
         } else if (state.phase === 1) {
@@ -151,14 +160,6 @@
             // Finding entry phase
             elements.phase1.classList.add('completed');
             elements.phase2.classList.add('active');
-        } else if (state.done) {
-            // Algorithm complete
-            if (state.hasCycle) {
-                elements.phase1.classList.add('completed');
-                elements.phase2.classList.add('completed');
-            } else {
-                elements.phase1.classList.add('completed');
-            }
         }
     }
 
@@ -287,11 +288,13 @@
         const slowNode = state.nodes.find(n => n.id === state.slow);
         const fastNode = state.nodes.find(n => n.id === state.fast);
 
-        // Check if fast can move (2 steps)
-        if (!fastNode || !fastNode.next || !fastNode.next.next) {
+        // Check if fast can move (matches pseudocode: while fast != null and fast.next != null)
+        if (!fastNode || !fastNode.next) {
             // No cycle - fast reached end
             state.done = true;
             state.hasCycle = false;
+            state.fast = null;  // Explicitly set fast to null for visualization
+            render();           // Update visualization to show final state
             renderPseudocode(15);
             renderExplanation('noCycle');
             updateStatus('No cycle detected - fast pointer reached the end', 'info');
@@ -308,11 +311,13 @@
 
         // Move pointers
         state.slow = slowNode.next.id;
-        state.fast = fastNode.next.next.id;
+        // Handle case where fast.next.next is null (fast reaches end)
+        const fastNextNext = fastNode.next.next;
+        state.fast = fastNextNext ? fastNextNext.id : null;
         state.iteration++;
 
         const newSlowNode = state.nodes.find(n => n.id === state.slow);
-        const newFastNode = state.nodes.find(n => n.id === state.fast);
+        const newFastNode = fastNextNext ? state.nodes.find(n => n.id === state.fast) : null;
 
         // Update display
         render();
@@ -327,11 +332,11 @@
             slowFrom: slowFrom,
             slowTo: state.slow,
             fastFrom: fastFrom,
-            fastTo: state.fast,
+            fastTo: state.fast !== null ? state.fast : 'null',
             slowFromVal: slowFromVal,
             slowToVal: newSlowNode.val,
             fastFromVal: fastFromVal,
-            fastToVal: newFastNode.val
+            fastToVal: newFastNode ? newFastNode.val : 'null'
         });
 
         // Check if pointers met
@@ -354,7 +359,8 @@
 
     function stepPhase2() {
         // First call to phase 2 - reset slow to head
-        if (state.slow !== state.nodes[0].id || state.phase2Step === undefined) {
+        // Only check phase2Step to avoid re-initializing after slow moves away from head
+        if (state.phase2Step === undefined) {
             state.phase2Step = 0;
             state.slow = state.nodes[0].id;
             state.fast = state.meetingPoint;
@@ -377,7 +383,7 @@
         const fastFromVal = fastNode.val;
 
         // Check if already at entry (same position before moving)
-        if (state.slow === state.fast && state.phase2Step > 0) {
+        if (state.slow === state.fast) {
             // Found entry
             state.done = true;
             state.cycleEntry = state.slow;

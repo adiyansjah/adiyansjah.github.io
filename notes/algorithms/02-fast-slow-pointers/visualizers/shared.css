@@ -97,7 +97,7 @@ h1 {
     min-width: 200px;
 }
 
-.input-group label {
+.input-group > label {
     display: block;
     font-size: 13px;
     color: var(--muted);
@@ -401,4 +401,5 @@ button.primary:hover:not(:disabled) {
     height: 48px;
     margin-bottom: 12px;
     opacity: 0.5;
+    display: inline-block;
 }

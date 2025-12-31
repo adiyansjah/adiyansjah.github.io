@@ -87,7 +87,14 @@
     // ============================================================================
 
     function setMode(mode) {
+        // Stop any playing animation
+        stopPlaying();
+
         state.mode = mode;
+
+        // Clear loaded list to avoid state mismatch with new preset inputs
+        state.nodes = [];
+        state.positions = new Map();
 
         // Update body class
         document.body.classList.remove('mode-nth', 'mode-palindrome');
@@ -104,8 +111,15 @@
         // Reset state
         resetState();
 
-        // Update explanation
+        // Reset all UI elements
+        render();
+        updateIterationCount();
+        updateStageIndicator();
+        updateReversedHalfDisplay();
+        renderPseudocode(0);
         updateInitialExplanation();
+        updateStatus('Ready to begin');
+        updateButtons();
     }
 
     function loadPresetsForMode(mode) {
@@ -463,7 +477,7 @@
             state.slow = state.nodes[0].id;
             state.fast = state.nodes[0].id;
             state.gapSteps = 0;
-            state.n = parseInt(elements.nValueInput.value, 10) || 2;
+            // Use validated state.n from load() - don't re-read from input
 
             render();
             renderPseudocode(3);
@@ -475,38 +489,35 @@
 
         // Stage 1: Create gap - move fast n steps ahead
         if (state.stage === 1) {
-            const fastNode = state.nodes.find(n => n.id === state.fast);
+            const fastNode = state.fast !== null ? state.nodes.find(n => n.id === state.fast) : null;
 
-            if (!fastNode || !fastNode.next) {
-                // Check if we've completed the gap
-                if (state.gapSteps < state.n) {
-                    // N exceeds list length
-                    state.done = true;
-                    state.result = null;
+            // If fast is already null (past end) before completing gap, n exceeds length
+            if (state.fast === null && state.gapSteps < state.n) {
+                state.done = true;
+                state.result = null;
 
-                    render();
-                    renderPseudocode(6);
-                    renderExplanation('nExceeds');
-                    updateStatus(`N (${state.n}) exceeds list length`, 'n-exceeds');
-                    updateButtons();
-                    return;
-                }
+                render();
+                renderPseudocode(6);
+                renderExplanation('nExceeds');
+                updateStatus(`N (${state.n}) exceeds list length`, 'n-exceeds');
+                updateButtons();
+                return;
             }
 
             if (state.gapSteps < state.n) {
-                // Move fast one step
-                if (fastNode && fastNode.next) {
-                    state.fast = fastNode.next.id;
+                // Move fast one step (can move to null if at last node)
+                if (fastNode) {
+                    state.fast = fastNode.next ? fastNode.next.id : null;
                     state.gapSteps++;
 
-                    const newFastNode = state.nodes.find(n => n.id === state.fast);
-                    const fastIndex = state.nodes.findIndex(n => n.id === state.fast);
+                    const newFastNode = state.fast !== null ? state.nodes.find(n => n.id === state.fast) : null;
+                    const fastIndex = state.fast !== null ? state.nodes.findIndex(n => n.id === state.fast) : null;
 
                     render();
                     renderPseudocode(7);
                     renderExplanation('gapCreation', {
                         step: state.gapSteps,
-                        fastIndex: fastIndex,
+                        fastIndex: fastIndex !== null ? fastIndex : 'NULL',
                         fastValue: newFastNode ? newFastNode.val : 'NULL'
                     });
                     updateStatus(`Gap creation: ${state.gapSteps}/${state.n} steps`, 'info');
@@ -515,7 +526,7 @@
                         state.stage = 2; // Move to next stage
                     }
                 } else {
-                    // Fast reached null before gap complete
+                    // Fast is null and gap not complete - n exceeds list length
                     state.done = true;
                     state.result = null;
 
@@ -888,7 +899,12 @@
 
         // Get N value for nth mode
         if (state.mode === 'nth') {
-            state.n = parseInt(elements.nValueInput.value, 10) || 2;
+            const nValue = parseInt(elements.nValueInput.value, 10);
+            if (isNaN(nValue) || nValue < 1) {
+                updateStatus('N must be a positive integer (>= 1)', 'error');
+                return;
+            }
+            state.n = nValue;
         }
 
         // Create linked list

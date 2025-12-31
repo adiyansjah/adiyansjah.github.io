@@ -219,7 +219,7 @@ select:disabled {
     overflow-x: auto;
 }
 
-.linked-list-viz svg {
+.linked-list-viz > svg {
     display: block;
 }
 

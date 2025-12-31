@@ -111,13 +111,16 @@
         );
     }
 
-    function renderPseudocode(line) {
+    function renderPseudocode(lineOrLines) {
+        // Support both single line number and array of line numbers
+        const linesToHighlight = Array.isArray(lineOrLines) ? lineOrLines : [lineOrLines];
+
         const lines = elements.pseudocode.querySelectorAll('.code-line');
         lines.forEach(el => {
             el.classList.remove('highlight');
             const lineNum = parseInt(el.dataset.line, 10);
             // Handle the conditional lines (4 and 5)
-            if (lineNum === line) {
+            if (linesToHighlight.includes(lineNum)) {
                 // Only highlight if visible
                 const isFirstMiddleLine = el.classList.contains('first-middle');
                 const isSecondMiddleLine = el.classList.contains('second-middle');
@@ -151,14 +154,20 @@
                     : 'Using condition: while fast.next and fast.next.next - finds first middle for even lists.'
             }),
 
-            moving: () => ({
-                title: `Iteration ${data.iteration}`,
-                detail: `<span class="highlight-slow">Slow</span> moves from node ${data.slowFrom} to node ${data.slowTo}.
-                        <br>
-                        <span class="highlight-fast">Fast</span> moves from node ${data.fastFrom} to node ${data.fastTo}.`,
-                calculation: `slow: ${data.slowFromVal} -> ${data.slowToVal}\nfast: ${data.fastFromVal} -> ${data.fastToVal}`,
-                reason: `Slow has moved ${data.iteration} step(s). Fast has moved ${data.iteration * 2} steps.`
-            }),
+            moving: () => {
+                const fastToDisplay = data.fastIsNull ? 'null (off list)' : `node ${data.fastTo}`;
+                const fastCalcDisplay = data.fastIsNull ? 'null' : data.fastToVal;
+                return {
+                    title: `Iteration ${data.iteration}`,
+                    detail: `<span class="highlight-slow">Slow</span> moves from node ${data.slowFrom} to node ${data.slowTo}.
+                            <br>
+                            <span class="highlight-fast">Fast</span> moves from node ${data.fastFrom} to ${fastToDisplay}.`,
+                    calculation: `slow: ${data.slowFromVal} -> ${data.slowToVal}\nfast: ${data.fastFromVal} -> ${fastCalcDisplay}`,
+                    reason: data.fastIsNull
+                        ? `Slow has moved ${data.iteration} step(s). Fast fell off the list (null) - loop will end.`
+                        : `Slow has moved ${data.iteration} step(s). Fast has moved ${data.iteration * 2} steps.`
+                };
+            },
 
             middleFound: () => ({
                 title: 'Middle Found!',
@@ -223,6 +232,11 @@
     // ============================================================================
 
     function checkCondition() {
+        // Handle case where fast has fallen off the list (null)
+        if (state.fast === null) {
+            return false;
+        }
+
         // Get current fast node
         const fastNode = state.nodes.find(n => n.id === state.fast);
 
@@ -248,7 +262,7 @@
             state.iteration = 0;
 
             render();
-            renderPseudocode(3);
+            renderPseudocode([2, 3]);
             renderExplanation('init');
             updateStatus('Initialized: Both pointers at head', 'info');
             updateButtons();
@@ -286,20 +300,22 @@
 
         // Move pointers
         state.slow = slowNode.next.id;
-        state.fast = fastNode.next.next.id;
+        // In "second middle" mode, fast.next.next can be null on the last iteration
+        const fastNextNext = fastNode.next ? fastNode.next.next : null;
+        state.fast = fastNextNext ? fastNextNext.id : null;
         state.iteration++;
 
         const newSlowNode = state.nodes.find(n => n.id === state.slow);
-        const newFastNode = state.nodes.find(n => n.id === state.fast);
+        const newFastNode = state.fast !== null ? state.nodes.find(n => n.id === state.fast) : null;
         const slowTo = state.nodes.findIndex(n => n.id === state.slow);
-        const fastTo = state.nodes.findIndex(n => n.id === state.fast);
+        const fastTo = state.fast !== null ? state.nodes.findIndex(n => n.id === state.fast) : null;
 
         // Update display
         render();
         updateIterationCount();
 
-        // Highlight code lines
-        renderPseudocode(7);
+        // Highlight code lines (both slow and fast movement)
+        renderPseudocode([6, 7]);
 
         // Update explanation
         renderExplanation('moving', {
@@ -311,10 +327,12 @@
             slowFromVal: slowFromVal,
             slowToVal: newSlowNode.val,
             fastFromVal: fastFromVal,
-            fastToVal: newFastNode.val
+            fastToVal: newFastNode ? newFastNode.val : 'null',
+            fastIsNull: state.fast === null
         });
 
-        updateStatus(`Iteration ${state.iteration}: Slow at node ${slowTo}, Fast at node ${fastTo}`, 'info');
+        const fastStatus = state.fast !== null ? `Fast at node ${fastTo}` : 'Fast fell off list (null)';
+        updateStatus(`Iteration ${state.iteration}: Slow at node ${slowTo}, ${fastStatus}`, 'info');
         updateButtons();
     }
 
@@ -465,6 +483,13 @@
         elements.resetBtn.disabled = !canReset;
 
         elements.playBtn.textContent = state.playing ? 'Pause' : 'Play';
+
+        // Disable middle type radio buttons once execution has started
+        // to prevent changing the condition mid-run
+        const executionStarted = state.slow !== null || state.done;
+        middleTypeRadios.forEach(radio => {
+            radio.disabled = executionStarted;
+        });
     }
 
     // ============================================================================
