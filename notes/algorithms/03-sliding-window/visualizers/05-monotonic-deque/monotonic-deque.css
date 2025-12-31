@@ -1,0 +1,59 @@
+/* Monotonic Deque Window specific styles */
+
+/* Override accent for this visualizer if needed */
+:root {
+    --accent: #14b8a6;
+}
+
+/* Result array container */
+.result-container {
+    margin-top: 16px;
+    padding: 16px;
+    background: var(--success-bg);
+    border: 1px solid var(--success);
+    border-radius: var(--radius);
+    min-width: 200px;
+}
+
+.result-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--success);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 12px;
+}
+
+.result-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    font-family: var(--mono);
+}
+
+.result-item {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+    padding: 0 12px;
+    background: var(--card);
+    border: 2px solid var(--success);
+    border-radius: var(--radius);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--success);
+}
+
+.result-item.latest {
+    background: var(--success);
+    color: white;
+    animation: pulse 0.3s ease-out;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+}
