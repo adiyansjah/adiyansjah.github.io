@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nth from End & Palindrome Visualizer</title>
+    <link rel="stylesheet" href="../shared.css">
+    <link rel="stylesheet" href="nth-palindrome.css">
+</head>
+<body class="mode-nth">
+    <div class="container">
+        <header>
+            <h1>Fast-Slow Pointers: Nth from End & Palindrome</h1>
+            <p class="subtitle">Two algorithms using fast-slow pointer technique for linked list problems</p>
+        </header>
+
+        <!-- Tab Buttons -->
+        <div class="tabs">
+            <button type="button" class="tab active" data-mode="nth">Nth from End</button>
+            <button type="button" class="tab" data-mode="palindrome">Palindrome Check</button>
+        </div>
+
+        <!-- Configuration Card -->
+        <div class="card">
+            <div class="card-title">Configuration</div>
+            <div class="controls">
+                <div class="input-row">
+                    <div class="input-group">
+                        <label for="presetSelect">Preset</label>
+                        <select id="presetSelect">
+                            <!-- Options populated dynamically based on mode -->
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="nodeValuesInput">Node Values (comma-separated)</label>
+                        <input type="text" id="nodeValuesInput" placeholder="e.g., 1, 2, 3, 4, 5">
+                    </div>
+                    <div class="input-group nth-only n-input">
+                        <label for="nValueInput">N (from end)</label>
+                        <input type="number" id="nValueInput" min="1" value="2" placeholder="e.g., 2">
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <button type="button" id="loadBtn" class="primary">Load</button>
+                    <button type="button" id="stepBtn" disabled>Step</button>
+                    <button type="button" id="playBtn" disabled>Play</button>
+                    <button type="button" id="resetBtn" disabled>Reset</button>
+                </div>
+            </div>
+            <div class="speed-control">
+                <label for="speedSlider">Speed:</label>
+                <input type="range" id="speedSlider" min="200" max="2000" value="800" step="100">
+                <span class="speed-value" id="speedValue">800ms</span>
+            </div>
+        </div>
+
+        <!-- Stage Indicator (Palindrome only) -->
+        <div class="stage-indicator palindrome-only">
+            <div class="stage stage-1 active" id="stage1">
+                <span class="stage-number">1</span>
+                <span class="stage-label">Find Middle</span>
+            </div>
+            <div class="stage-divider"></div>
+            <div class="stage stage-2" id="stage2">
+                <span class="stage-number">2</span>
+                <span class="stage-label">Reverse Half</span>
+            </div>
+            <div class="stage-divider"></div>
+            <div class="stage stage-3" id="stage3">
+                <span class="stage-number">3</span>
+                <span class="stage-label">Compare</span>
+            </div>
+        </div>
+
+        <!-- Visualization Card -->
+        <div class="card">
+            <div class="viz-container">
+                <div class="iteration-badge">
+                    Iteration: <span class="count" id="iterationCount">0</span>
+                </div>
+                <div class="linked-list-viz" id="linkedListViz">
+                    <div class="empty-state">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                        <p>Click Load to create a linked list</p>
+                    </div>
+                </div>
+                <!-- Reversed Half Display (Palindrome only) -->
+                <div class="reversed-half-display palindrome-only" id="reversedHalfDisplay">
+                    <span class="reversed-label">Reversed second half:</span>
+                    <span class="reversed-values" id="reversedValues">-</span>
+                </div>
+                <div class="status-bar" id="statusBar">Ready to begin</div>
+            </div>
+        </div>
+
+        <!-- Educational Panels -->
+        <div class="panels">
+            <div class="panel">
+                <div class="panel-header">Algorithm Pseudocode</div>
+                <div class="panel-body">
+                    <!-- Nth from End Pseudocode -->
+                    <div class="pseudocode nth-only" id="pseudocodeNth">
+                        <div class="code-line" data-line="1"><span class="keyword">function</span> nthFromEnd(head, n):</div>
+                        <div class="code-line" data-line="2">  slow = head</div>
+                        <div class="code-line" data-line="3">  fast = head</div>
+                        <div class="code-line" data-line="4">  <span class="comment">// Move fast n steps ahead</span></div>
+                        <div class="code-line" data-line="5">  <span class="keyword">for</span> i = 0 <span class="keyword">to</span> n-1:</div>
+                        <div class="code-line" data-line="6">    <span class="keyword">if</span> fast == null: <span class="keyword">return</span> null</div>
+                        <div class="code-line" data-line="7">    fast = fast.next</div>
+                        <div class="code-line" data-line="8">  <span class="comment">// Move both until fast reaches end</span></div>
+                        <div class="code-line" data-line="9">  <span class="keyword">while</span> fast != null:</div>
+                        <div class="code-line" data-line="10">    slow = slow.next</div>
+                        <div class="code-line" data-line="11">    fast = fast.next</div>
+                        <div class="code-line" data-line="12">  <span class="keyword">return</span> slow <span class="comment">// nth from end</span></div>
+                    </div>
+                    <!-- Palindrome Pseudocode -->
+                    <div class="pseudocode palindrome-only" id="pseudocodePalindrome">
+                        <div class="code-line" data-line="1"><span class="keyword">function</span> isPalindrome(head):</div>
+                        <div class="code-line" data-line="2">  <span class="comment">// Stage 1: Find middle</span></div>
+                        <div class="code-line" data-line="3">  slow = head, fast = head</div>
+                        <div class="code-line" data-line="4">  <span class="keyword">while</span> fast <span class="keyword">and</span> fast.next:</div>
+                        <div class="code-line" data-line="5">    slow = slow.next</div>
+                        <div class="code-line" data-line="6">    fast = fast.next.next</div>
+                        <div class="code-line" data-line="7">  <span class="comment">// Stage 2: Reverse second half</span></div>
+                        <div class="code-line" data-line="8">  secondHalf = reverse(slow)</div>
+                        <div class="code-line" data-line="9">  <span class="comment">// Stage 3: Compare halves</span></div>
+                        <div class="code-line" data-line="10">  p1 = head, p2 = secondHalf</div>
+                        <div class="code-line" data-line="11">  <span class="keyword">while</span> p2 != null:</div>
+                        <div class="code-line" data-line="12">    <span class="keyword">if</span> p1.val != p2.val: <span class="keyword">return</span> false</div>
+                        <div class="code-line" data-line="13">    p1 = p1.next, p2 = p2.next</div>
+                        <div class="code-line" data-line="14">  <span class="keyword">return</span> true</div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel">
+                <div class="panel-header">What's Happening</div>
+                <div class="panel-body">
+                    <div class="explanation" id="explanation">
+                        <div class="step-title">Ready to start</div>
+                        <div class="step-detail">
+                            Select a mode using the tabs above, then load a linked list to visualize the algorithm.
+                            <br><br>
+                            <strong>Nth from End:</strong> Use a gap of N between pointers to find the Nth node from the end.
+                            <br><br>
+                            <strong>Palindrome:</strong> Find middle, reverse second half, compare both halves.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../fast-slow-shared.js"></script>
+    <script src="nth-palindrome.js"></script>
+</body>
+</html>

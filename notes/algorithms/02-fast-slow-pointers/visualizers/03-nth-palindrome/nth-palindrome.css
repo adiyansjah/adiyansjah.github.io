@@ -1,0 +1,348 @@
+/* Nth from End & Palindrome Visualizer Styles */
+
+:root {
+    --accent: #6366f1;
+    --accent-bg: #eef2ff;
+    --slow-color: #3b82f6;
+    --slow-bg: #dbeafe;
+    --fast-color: #f97316;
+    --fast-bg: #ffedd5;
+    --both-color: #8b5cf6;
+    --both-bg: #f3e8ff;
+    --found-color: #22c55e;
+    --found-bg: #dcfce7;
+    --compare-color: #ec4899;
+    --compare-bg: #fce7f3;
+}
+
+/* Tab Styling */
+.tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    padding: 4px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+
+.tab {
+    flex: 1;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.tab:hover {
+    color: var(--text);
+    background: var(--bg);
+}
+
+.tab.active {
+    background: var(--accent);
+    color: white;
+}
+
+.tab.active:hover {
+    background: var(--accent);
+    color: white;
+    filter: brightness(0.95);
+}
+
+/* Mode-conditional display */
+.nth-only {
+    display: block;
+}
+
+.palindrome-only {
+    display: none;
+}
+
+body.mode-palindrome .nth-only {
+    display: none;
+}
+
+body.mode-palindrome .palindrome-only {
+    display: block;
+}
+
+body.mode-nth .nth-only {
+    display: block;
+}
+
+body.mode-nth .palindrome-only {
+    display: none;
+}
+
+/* N Input Styling */
+.n-input {
+    min-width: 120px;
+    flex: 0.4;
+}
+
+.n-input input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 14px;
+    font-family: var(--mono);
+    transition: border-color 0.15s;
+}
+
+.n-input input:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+/* Select Dropdown Styling */
+select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 14px;
+    font-family: var(--sans);
+    background: var(--card);
+    cursor: pointer;
+    transition: border-color 0.15s;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23737373'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px;
+    padding-right: 36px;
+}
+
+select:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+select:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Stage Indicator (3 stages for palindrome) */
+.stage-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding: 16px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+
+.stage {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    border-radius: var(--radius);
+    background: var(--bg);
+    border: 2px solid var(--border);
+    transition: all 0.3s ease;
+}
+
+.stage-number {
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--border);
+    color: var(--muted);
+    border-radius: 50%;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.stage-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    transition: color 0.3s ease;
+}
+
+.stage-divider {
+    width: 30px;
+    height: 2px;
+    background: var(--border);
+}
+
+.stage.active {
+    border-color: var(--accent);
+    background: var(--accent-bg);
+}
+
+.stage.active .stage-number {
+    background: var(--accent);
+    color: white;
+}
+
+.stage.active .stage-label {
+    color: var(--accent);
+}
+
+.stage.completed {
+    border-color: var(--success);
+    background: var(--success-bg);
+}
+
+.stage.completed .stage-number {
+    background: var(--success);
+    color: white;
+}
+
+.stage.completed .stage-label {
+    color: var(--success);
+}
+
+/* Linked List Visualization */
+.linked-list-viz {
+    min-height: 250px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow-x: auto;
+}
+
+.linked-list-viz svg {
+    display: block;
+}
+
+/* Reversed Half Display */
+.reversed-half-display {
+    margin-top: 16px;
+    padding: 12px 16px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 14px;
+    text-align: center;
+}
+
+.reversed-label {
+    color: var(--muted);
+    margin-right: 8px;
+}
+
+.reversed-values {
+    font-family: var(--mono);
+    font-weight: 600;
+    color: var(--accent);
+}
+
+/* Pointer Animation */
+.pointer-icon {
+    transition: transform 0.3s ease;
+}
+
+.pointer-slow {
+    fill: var(--slow-color);
+}
+
+.pointer-fast {
+    fill: var(--fast-color);
+}
+
+/* Node States in SVG */
+.node-group circle {
+    transition: fill 0.3s ease, stroke 0.3s ease;
+}
+
+/* Explanation Highlights */
+.explanation .highlight-slow {
+    color: var(--slow-color);
+    font-weight: 600;
+}
+
+.explanation .highlight-fast {
+    color: var(--fast-color);
+    font-weight: 600;
+}
+
+.explanation .highlight-both {
+    color: var(--both-color);
+    font-weight: 600;
+}
+
+.explanation .highlight-found {
+    color: var(--found-color);
+    font-weight: 600;
+}
+
+.explanation .highlight-compare {
+    color: var(--compare-color);
+    font-weight: 600;
+}
+
+/* Status Bar Variations */
+.status-bar.nth-found {
+    background: var(--found-bg);
+    color: var(--found-color);
+}
+
+.status-bar.palindrome-true {
+    background: var(--found-bg);
+    color: var(--found-color);
+}
+
+.status-bar.palindrome-false {
+    background: var(--error-bg);
+    color: var(--error);
+}
+
+.status-bar.n-exceeds {
+    background: var(--error-bg);
+    color: var(--error);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .stage-indicator {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .stage-divider {
+        display: none;
+    }
+
+    .stage {
+        flex: 1;
+        min-width: 100px;
+        justify-content: center;
+    }
+
+    .tabs {
+        flex-direction: column;
+    }
+
+    .n-input {
+        flex: 1;
+        min-width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .stage {
+        padding: 8px 12px;
+    }
+
+    .stage-label {
+        font-size: 12px;
+    }
+}
