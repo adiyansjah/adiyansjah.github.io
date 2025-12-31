@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Middle Finding Visualizer</title>
+    <link rel="stylesheet" href="../shared.css">
+    <link rel="stylesheet" href="middle-finding.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Fast-Slow Pointers: Middle Finding</h1>
+            <p class="subtitle">Find the middle element of a linked list in one pass using fast and slow pointers</p>
+        </header>
+
+        <!-- Configuration Card -->
+        <div class="card">
+            <div class="card-title">Configuration</div>
+            <div class="controls">
+                <div class="input-row">
+                    <div class="input-group">
+                        <label for="presetSelect">Preset</label>
+                        <select id="presetSelect">
+                            <option value="odd-5" selected>Odd length (5 nodes)</option>
+                            <option value="even-6">Even length (6 nodes)</option>
+                            <option value="two-nodes">Two nodes</option>
+                            <option value="single">Single node</option>
+                            <option value="custom">Custom</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="nodeValuesInput">Node Values (comma-separated)</label>
+                        <input type="text" id="nodeValuesInput" placeholder="e.g., 1, 2, 3, 4, 5">
+                    </div>
+                </div>
+                <div class="input-row">
+                    <div class="input-group toggle-container">
+                        <label>Middle Selection</label>
+                        <div class="toggle-group">
+                            <label class="toggle-option">
+                                <input type="radio" name="middleType" value="first" checked>
+                                <span class="toggle-label">First Middle</span>
+                            </label>
+                            <label class="toggle-option">
+                                <input type="radio" name="middleType" value="second">
+                                <span class="toggle-label">Second Middle</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <button type="button" id="loadBtn" class="primary">Load</button>
+                    <button type="button" id="stepBtn" disabled>Step</button>
+                    <button type="button" id="playBtn" disabled>Play</button>
+                    <button type="button" id="resetBtn" disabled>Reset</button>
+                </div>
+            </div>
+            <div class="speed-control">
+                <label for="speedSlider">Speed:</label>
+                <input type="range" id="speedSlider" min="200" max="2000" value="800" step="100">
+                <span class="speed-value" id="speedValue">800ms</span>
+            </div>
+        </div>
+
+        <!-- Visualization Card -->
+        <div class="card">
+            <div class="viz-container">
+                <div class="iteration-badge">
+                    Iteration: <span class="count" id="iterationCount">0</span>
+                </div>
+                <div class="linked-list-viz" id="linkedListViz">
+                    <div class="empty-state">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                        <p>Click Load to create a linked list</p>
+                    </div>
+                </div>
+                <div class="status-bar" id="statusBar">Ready to begin</div>
+            </div>
+        </div>
+
+        <!-- Educational Panels -->
+        <div class="panels">
+            <div class="panel">
+                <div class="panel-header">Algorithm Pseudocode</div>
+                <div class="panel-body">
+                    <div class="pseudocode" id="pseudocode">
+                        <div class="code-line" data-line="1"><span class="keyword">function</span> findMiddle(head):</div>
+                        <div class="code-line" data-line="2">  slow = head</div>
+                        <div class="code-line" data-line="3">  fast = head</div>
+                        <div class="code-line first-middle" data-line="4">  <span class="comment">// First middle (for even length)</span></div>
+                        <div class="code-line first-middle" data-line="5">  <span class="keyword">while</span> fast.next != null <span class="keyword">and</span> fast.next.next != null:</div>
+                        <div class="code-line second-middle" data-line="4">  <span class="comment">// Second middle (for even length)</span></div>
+                        <div class="code-line second-middle" data-line="5">  <span class="keyword">while</span> fast != null <span class="keyword">and</span> fast.next != null:</div>
+                        <div class="code-line" data-line="6">    slow = slow.next</div>
+                        <div class="code-line" data-line="7">    fast = fast.next.next</div>
+                        <div class="code-line" data-line="8">  <span class="keyword">return</span> slow <span class="comment">// middle node</span></div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel">
+                <div class="panel-header">What's Happening</div>
+                <div class="panel-body">
+                    <div class="explanation" id="explanation">
+                        <div class="step-title">Ready to start</div>
+                        <div class="step-detail">
+                            Load a linked list and use Step or Play to visualize the middle-finding algorithm.
+                            <br><br>
+                            <strong>Key insight:</strong> When fast reaches the end, slow is at the middle because fast moves twice as fast.
+                            <br><br>
+                            <strong>First vs Second Middle:</strong> For even-length lists, there are two "middle" elements. The while condition determines which one we find.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../fast-slow-shared.js"></script>
+    <script src="middle-finding.js"></script>
+</body>
+</html>

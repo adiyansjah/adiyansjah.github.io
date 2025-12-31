@@ -1,0 +1,237 @@
+/* Middle Finding Visualizer Styles */
+
+:root {
+    --accent: #10b981;
+    --accent-bg: #ecfdf5;
+    --slow-color: #3b82f6;
+    --slow-bg: #dbeafe;
+    --fast-color: #f97316;
+    --fast-bg: #ffedd5;
+    --both-color: #8b5cf6;
+    --both-bg: #f3e8ff;
+    --middle-color: #10b981;
+    --middle-bg: #dcfce7;
+}
+
+/* Select Dropdown Styling */
+select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 14px;
+    font-family: var(--sans);
+    background: var(--card);
+    cursor: pointer;
+    transition: border-color 0.15s;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23737373'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px;
+    padding-right: 36px;
+}
+
+select:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+select:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Toggle Group for First/Second Middle */
+.toggle-container {
+    min-width: 280px;
+}
+
+.toggle-group {
+    display: flex;
+    gap: 16px;
+    padding: 8px 0;
+}
+
+.toggle-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.toggle-option input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    accent-color: var(--accent);
+    cursor: pointer;
+}
+
+.toggle-label {
+    color: var(--text);
+    font-weight: 500;
+    transition: color 0.15s;
+}
+
+.toggle-option:hover .toggle-label {
+    color: var(--accent);
+}
+
+.toggle-option input[type="radio"]:checked + .toggle-label {
+    color: var(--accent);
+}
+
+/* Linked List Visualization */
+.linked-list-viz {
+    min-height: 250px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow-x: auto;
+}
+
+.linked-list-viz svg {
+    display: block;
+}
+
+/* Pointer Animation */
+.pointer-icon {
+    transition: transform 0.3s ease;
+}
+
+.pointer-slow {
+    fill: var(--slow-color);
+}
+
+.pointer-fast {
+    fill: var(--fast-color);
+}
+
+/* Node States in SVG */
+.node-group circle {
+    transition: fill 0.3s ease, stroke 0.3s ease;
+}
+
+/* Pseudocode Toggle - First Middle vs Second Middle */
+.pseudocode .first-middle {
+    display: block;
+}
+
+.pseudocode .second-middle {
+    display: none;
+}
+
+.pseudocode.show-second .first-middle {
+    display: none;
+}
+
+.pseudocode.show-second .second-middle {
+    display: block;
+}
+
+/* Explanation Highlights */
+.explanation .highlight-slow {
+    color: var(--slow-color);
+    font-weight: 600;
+}
+
+.explanation .highlight-fast {
+    color: var(--fast-color);
+    font-weight: 600;
+}
+
+.explanation .highlight-both {
+    color: var(--both-color);
+    font-weight: 600;
+}
+
+.explanation .highlight-middle {
+    color: var(--middle-color);
+    font-weight: 600;
+}
+
+/* Legend */
+.legend {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.legend-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    border: 2px solid;
+}
+
+.legend-color.slow {
+    background: var(--slow-bg);
+    border-color: var(--slow-color);
+}
+
+.legend-color.fast {
+    background: var(--fast-bg);
+    border-color: var(--fast-color);
+}
+
+.legend-color.both {
+    background: var(--both-bg);
+    border-color: var(--both-color);
+}
+
+.legend-color.middle {
+    background: var(--middle-bg);
+    border-color: var(--middle-color);
+}
+
+/* Status Bar Variations */
+.status-bar.middle-found {
+    background: var(--middle-bg);
+    color: var(--middle-color);
+}
+
+/* Middle Type Badge */
+.middle-type-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-left: 8px;
+}
+
+.middle-type-badge.first {
+    background: #dbeafe;
+    color: #3b82f6;
+}
+
+.middle-type-badge.second {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .toggle-group {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .toggle-container {
+        min-width: 100%;
+    }
+}
