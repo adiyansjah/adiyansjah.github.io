@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fixed-Size Window Visualizer</title>
+    <link rel="stylesheet" href="../shared.css">
+    <link rel="stylesheet" href="fixed-size.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Sliding Window: Fixed-Size Window</h1>
+            <p class="subtitle">Find the maximum sum of K consecutive elements in an array</p>
+        </header>
+
+        <!-- Configuration Card -->
+        <div class="card">
+            <div class="card-title">Configuration</div>
+            <div class="controls">
+                <div class="input-row">
+                    <div class="input-group">
+                        <label for="presetSelect">Preset</label>
+                        <select id="presetSelect">
+                            <option value="small" selected>Small (6 elements, k=3)</option>
+                            <option value="medium">Medium (9 elements, k=4)</option>
+                            <option value="single">Single element</option>
+                            <option value="max-at-end">Max at end</option>
+                            <option value="custom">Custom</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="arrayInput">Array (comma-separated)</label>
+                        <input type="text" id="arrayInput" placeholder="e.g., 2, 1, 5, 1, 3, 2">
+                    </div>
+                    <div class="input-group small">
+                        <label for="kInput">K (window size)</label>
+                        <input type="number" id="kInput" min="1" value="3">
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <button id="loadBtn" class="primary">Load</button>
+                    <button id="stepBtn" disabled>Step</button>
+                    <button id="playBtn" disabled>Play</button>
+                    <button id="resetBtn" disabled>Reset</button>
+                </div>
+            </div>
+            <div class="speed-control">
+                <label for="speedSlider">Speed:</label>
+                <input type="range" id="speedSlider" min="200" max="2000" value="800" step="100">
+                <span class="speed-value" id="speedValue">800ms</span>
+            </div>
+        </div>
+
+        <!-- Visualization Card -->
+        <div class="card">
+            <div class="viz-container">
+                <div class="iteration-badge">
+                    Step: <span class="count" id="stepCount">0</span>
+                </div>
+                <div class="array-viz" id="arrayViz">
+                    <div class="empty-state">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                        <p>Click Load to create an array</p>
+                    </div>
+                </div>
+                <div class="status-bar" id="statusBar">Ready to begin</div>
+            </div>
+        </div>
+
+        <!-- Educational Panels -->
+        <div class="panels">
+            <div class="panel">
+                <div class="panel-header">Algorithm Pseudocode</div>
+                <div class="panel-body">
+                    <div class="pseudocode" id="pseudocode">
+                        <div class="code-line" data-line="1"><span class="keyword">function</span> maxSumK(arr, k):</div>
+                        <div class="code-line" data-line="2">  n = arr.length</div>
+                        <div class="code-line" data-line="3">  <span class="keyword">if</span> n < k: <span class="keyword">return</span> -1</div>
+                        <div class="code-line" data-line="4"></div>
+                        <div class="code-line" data-line="5">  windowSum = sum(arr[0:k])</div>
+                        <div class="code-line" data-line="6">  maxSum = windowSum</div>
+                        <div class="code-line" data-line="7"></div>
+                        <div class="code-line" data-line="8">  <span class="keyword">for</span> right = k <span class="keyword">to</span> n-1:</div>
+                        <div class="code-line" data-line="9">    windowSum += arr[right]</div>
+                        <div class="code-line" data-line="10">    windowSum -= arr[right - k]</div>
+                        <div class="code-line" data-line="11"></div>
+                        <div class="code-line" data-line="12">    <span class="keyword">if</span> windowSum > maxSum:</div>
+                        <div class="code-line" data-line="13">      maxSum = windowSum</div>
+                        <div class="code-line" data-line="14"></div>
+                        <div class="code-line" data-line="15">  <span class="keyword">return</span> maxSum</div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel">
+                <div class="panel-header">What's Happening</div>
+                <div class="panel-body">
+                    <div class="explanation" id="explanation">
+                        <div class="step-title">Ready to start</div>
+                        <div class="step-detail">
+                            Load an array and use Step or Play to visualize the fixed-size sliding window algorithm.
+                            <br><br>
+                            <strong>Goal:</strong> Find the maximum sum of K consecutive elements.
+                            <br><br>
+                            <strong>Technique:</strong> Slide a window of size K, adding the new element and removing the old one.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../sliding-window-shared.js"></script>
+    <script src="fixed-size.js"></script>
+</body>
+</html>

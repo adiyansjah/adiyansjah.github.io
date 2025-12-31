@@ -1,0 +1,6 @@
+/* Fixed-Size Window specific styles */
+
+/* Override accent for this visualizer if needed */
+:root {
+    --accent: #14b8a6;
+}
