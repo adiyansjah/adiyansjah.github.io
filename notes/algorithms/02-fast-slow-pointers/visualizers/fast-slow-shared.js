@@ -215,12 +215,12 @@ function createArrow(from, to, curved = false) {
  * Creates a node element (circle with value)
  * @param {ListNode} node - The node to render
  * @param {Object} pos - Position { x, y, inCycle }
- * @param {Object} states - { slow: boolean, fast: boolean, found: boolean }
+ * @param {Object} states - { slow: boolean, fast: boolean, found: boolean, cycleEntry: boolean }
  * @returns {SVGElement} - Group element containing the node
  */
 function createNodeElement(node, pos, states = {}) {
     const { nodeSize } = LAYOUT;
-    const { slow, fast, found } = states;
+    const { slow, fast, found, cycleEntry } = states;
 
     const group = createSVGElement('g', {
         transform: `translate(${pos.x}, ${pos.y})`,
@@ -235,6 +235,9 @@ function createNodeElement(node, pos, states = {}) {
     if (found) {
         fillColor = '#dcfce7';
         strokeColor = '#22c55e';
+    } else if (cycleEntry) {
+        fillColor = '#fefce8';
+        strokeColor = '#eab308';
     } else if (slow && fast) {
         fillColor = '#f3e8ff';
         strokeColor = '#a855f7';
@@ -445,53 +448,27 @@ function renderLinkedListSVG(container, nodes, positions, pointers = {}, cycleIn
 
 const PRESETS = {
     cycle: {
-        name: 'Cycle Detection',
-        values: [1, 2, 3, 4, 5, 6, 7, 8],
-        cycleIndex: 2,
-        description: 'List with cycle starting at node 3'
-    },
-    noCycle: {
-        name: 'No Cycle',
-        values: [1, 2, 3, 4, 5],
-        cycleIndex: -1,
-        description: 'Simple linear list without cycle'
+        'no-cycle-5': { values: [1, 2, 3, 4, 5], cycleIndex: -1, label: 'No cycle (5 nodes)' },
+        'cycle-at-2': { values: [1, 2, 3, 4, 5, 6], cycleIndex: 1, label: 'Cycle at node 2' },
+        'self-loop': { values: [1], cycleIndex: 0, label: 'Self-loop' },
+        'long-tail': { values: [1, 2, 3, 4, 5, 6, 7], cycleIndex: 4, label: 'Long tail, short cycle' }
     },
     middle: {
-        name: 'Find Middle',
-        values: [1, 2, 3, 4, 5, 6, 7],
-        cycleIndex: -1,
-        description: 'Odd-length list for finding middle'
-    },
-    middleEven: {
-        name: 'Find Middle (Even)',
-        values: [1, 2, 3, 4, 5, 6],
-        cycleIndex: -1,
-        description: 'Even-length list for finding middle'
+        'odd-5': { values: [1, 2, 3, 4, 5], label: 'Odd length (5 nodes)' },
+        'even-6': { values: [1, 2, 3, 4, 5, 6], label: 'Even length (6 nodes)' },
+        'two-nodes': { values: [1, 2], label: 'Two nodes' },
+        'single': { values: [1], label: 'Single node' }
     },
     nth: {
-        name: 'Nth From End',
-        values: [1, 2, 3, 4, 5, 6, 7, 8, 9],
-        cycleIndex: -1,
-        n: 3,
-        description: 'Find 3rd node from end'
+        'n-2': { values: [1, 2, 3, 4, 5], n: 2, label: '5 nodes, n=2' },
+        'n-first': { values: [1, 2, 3, 4, 5], n: 5, label: '5 nodes, n=5 (first)' },
+        'n-exceeds': { values: [1, 2, 3], n: 5, label: 'n exceeds length' }
     },
     palindrome: {
-        name: 'Palindrome Check',
-        values: [1, 2, 3, 2, 1],
-        cycleIndex: -1,
-        description: 'Palindrome list: 1-2-3-2-1'
-    },
-    notPalindrome: {
-        name: 'Not Palindrome',
-        values: [1, 2, 3, 4, 5],
-        cycleIndex: -1,
-        description: 'Non-palindrome list'
-    },
-    smallCycle: {
-        name: 'Small Cycle',
-        values: [1, 2, 3],
-        cycleIndex: 0,
-        description: 'Short list with cycle to head'
+        'true-even': { values: [1, 2, 2, 1], label: '1->2->2->1 (true)' },
+        'true-odd': { values: [1, 2, 3, 2, 1], label: '1->2->3->2->1 (true)' },
+        'false': { values: [1, 2, 3], label: '1->2->3 (false)' },
+        'single': { values: [1], label: 'Single node' }
     }
 };
 
