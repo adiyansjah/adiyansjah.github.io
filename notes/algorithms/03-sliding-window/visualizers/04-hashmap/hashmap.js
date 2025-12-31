@@ -165,6 +165,7 @@ Length: ${state.maxLen}`,
             state.maxLen = 0;
             state.bestWindow = null;
             state.step = 0;
+            state.contracting = false;
 
             elements.auxContainer.style.display = 'block';
             render();
@@ -211,6 +212,13 @@ Length: ${state.maxLen}`,
             } else {
                 // Done contracting
                 state.contracting = false;
+
+                // Window is valid again; record max before next expansion
+                const currentLen = state.right - state.left + 1;
+                if (currentLen > state.maxLen) {
+                    state.maxLen = currentLen;
+                    state.bestWindow = { left: state.left, right: state.right };
+                }
             }
         }
 

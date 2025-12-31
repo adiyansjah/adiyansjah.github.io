@@ -161,6 +161,7 @@ Length: ${state.maxLen}`,
             state.maxLen = 0;
             state.bestWindow = null;
             state.step = 0;
+            state.contracting = false;
 
             elements.auxContainer.style.display = 'block';
             render();
@@ -196,8 +197,32 @@ Length: ${state.maxLen}`,
                 updateStatusBar(elements.statusBar, `Contracting: removed '${removed}'`, 'info');
                 return false;
             } else {
-                // Done contracting, add the character
+                // Done contracting, add the character without advancing right
                 state.contracting = false;
+
+                state.charSet.add(nextChar);
+                const oldMax = state.maxLen;
+                const currentLen = state.right - state.left + 1;
+                const newMax = currentLen > state.maxLen;
+
+                if (newMax) {
+                    state.maxLen = currentLen;
+                    state.bestWindow = { left: state.left, right: state.right };
+                }
+
+                render();
+                updateStepCount();
+                highlightPseudocode(elements.pseudocode, newMax ? 14 : 11);
+                renderExplanation('expand', {
+                    step: state.step,
+                    right: state.right,
+                    left: state.left,
+                    char: nextChar,
+                    newMax,
+                    oldMax
+                });
+                updateStatusBar(elements.statusBar, `Added '${nextChar}', window length: ${currentLen}`, 'info');
+                return false;
             }
         }
 
