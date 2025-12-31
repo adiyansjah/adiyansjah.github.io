@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Variable Window (Max) Visualizer</title>
+    <link rel="stylesheet" href="../shared.css">
+    <link rel="stylesheet" href="variable-max.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Sliding Window: Variable Window (Maximum)</h1>
+            <p class="subtitle">Find the longest substring without repeating characters</p>
+        </header>
+
+        <!-- Configuration Card -->
+        <div class="card">
+            <div class="card-title">Configuration</div>
+            <div class="controls">
+                <div class="input-row">
+                    <div class="input-group">
+                        <label for="presetSelect">Preset</label>
+                        <select id="presetSelect">
+                            <option value="abcabcbb" selected>"abcabcbb" (answer: 3)</option>
+                            <option value="pwwkew">"pwwkew" (answer: 3)</option>
+                            <option value="bbbbb">"bbbbb" (answer: 1)</option>
+                            <option value="abcdef">"abcdef" (answer: 6)</option>
+                            <option value="custom">Custom</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="stringInput">String</label>
+                        <input type="text" id="stringInput" placeholder="e.g., abcabcbb">
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <button id="loadBtn" class="primary">Load</button>
+                    <button id="stepBtn" disabled>Step</button>
+                    <button id="playBtn" disabled>Play</button>
+                    <button id="resetBtn" disabled>Reset</button>
+                </div>
+            </div>
+            <div class="speed-control">
+                <label for="speedSlider">Speed:</label>
+                <input type="range" id="speedSlider" min="200" max="2000" value="800" step="100">
+                <span class="speed-value" id="speedValue">800ms</span>
+            </div>
+        </div>
+
+        <!-- Visualization Card -->
+        <div class="card">
+            <div class="viz-container">
+                <div class="iteration-badge">
+                    Step: <span class="count" id="stepCount">0</span>
+                </div>
+                <div class="array-viz" id="arrayViz">
+                    <div class="empty-state">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                        <p>Click Load to create a string</p>
+                    </div>
+                </div>
+                <!-- Auxiliary Structure: HashSet -->
+                <div class="aux-container" id="auxContainer" style="display: none;">
+                    <div class="aux-title">Characters in Window (HashSet)</div>
+                    <div class="aux-content" id="hashSetViz"></div>
+                </div>
+                <div class="status-bar" id="statusBar">Ready to begin</div>
+            </div>
+        </div>
+
+        <!-- Educational Panels -->
+        <div class="panels">
+            <div class="panel">
+                <div class="panel-header">Algorithm Pseudocode</div>
+                <div class="panel-body">
+                    <div class="pseudocode" id="pseudocode">
+                        <div class="code-line" data-line="1"><span class="keyword">function</span> lengthOfLongestSubstring(s):</div>
+                        <div class="code-line" data-line="2">  charSet = <span class="keyword">new</span> Set()</div>
+                        <div class="code-line" data-line="3">  left = 0</div>
+                        <div class="code-line" data-line="4">  maxLen = 0</div>
+                        <div class="code-line" data-line="5"></div>
+                        <div class="code-line" data-line="6">  <span class="keyword">for</span> right = 0 <span class="keyword">to</span> s.length - 1:</div>
+                        <div class="code-line" data-line="7">    <span class="keyword">while</span> s[right] <span class="keyword">in</span> charSet:</div>
+                        <div class="code-line" data-line="8">      charSet.remove(s[left])</div>
+                        <div class="code-line" data-line="9">      left++</div>
+                        <div class="code-line" data-line="10"></div>
+                        <div class="code-line" data-line="11">    charSet.add(s[right])</div>
+                        <div class="code-line" data-line="12"></div>
+                        <div class="code-line" data-line="13">    <span class="keyword">if</span> right - left + 1 > maxLen:</div>
+                        <div class="code-line" data-line="14">      maxLen = right - left + 1</div>
+                        <div class="code-line" data-line="15"></div>
+                        <div class="code-line" data-line="16">  <span class="keyword">return</span> maxLen</div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel">
+                <div class="panel-header">What's Happening</div>
+                <div class="panel-body">
+                    <div class="explanation" id="explanation">
+                        <div class="step-title">Ready to start</div>
+                        <div class="step-detail">
+                            Load a string and use Step or Play to visualize the variable-size sliding window algorithm.
+                            <br><br>
+                            <strong>Goal:</strong> Find the longest substring without repeating characters.
+                            <br><br>
+                            <strong>Technique:</strong> Expand right, contract left when duplicate found.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../sliding-window-shared.js"></script>
+    <script src="variable-max.js"></script>
+</body>
+</html>
